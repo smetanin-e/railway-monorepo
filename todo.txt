@@ -1,1 +1,5 @@
+pnpm --filter backend start:dev
+pnpm --filter frontend dev
 Список задач 
+1. Создание монорепозитория
+2. Создание и подключение базы данных. Установка и настройка Prisma
