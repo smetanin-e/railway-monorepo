@@ -1,0 +1,12 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Query {
+  getWagonTypes: [WagonTypeModel!]!
+}
+
+type WagonTypeModel {
+  id: String!
+  name: String!
+}
