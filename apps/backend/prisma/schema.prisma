@@ -17,3 +17,164 @@ model User {
 
     @@map("users")
 }
+
+// Вагон
+model Wagon {
+    id     String @id @default(uuid())
+    number String @unique
+
+    typeId String    @map("type_id")
+    type   WagonType @relation(fields: [typeId], references: [id])
+
+    ownerId String?     @map("owner_id")
+    owner   WagonOwner? @relation(fields: [ownerId], references: [id])
+
+    barPackage Decimal @map("bar_package") @db.Decimal(10, 3) //тара с бруса (т)
+    capacity   Decimal @db.Decimal(10, 3) //Грузоподъемность (т)
+    volume     Decimal @db.Decimal(10, 3) //Объем (м³)
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    states WagonState[]
+
+    @@index([typeId])
+    @@index([ownerId])
+}
+
+// Тип вагона (Род вагона)
+model WagonType {
+    id   String @id @default(uuid())
+    name String @unique
+
+    wagons Wagon[]
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("wagon_type")
+}
+
+// Собственник вагона
+model WagonOwner {
+    id   String @id @default(uuid())
+    name String @unique
+
+    wagons Wagon[] //  история состояний
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("wagon_owner")
+}
+
+// Груз (Содержимое вагона в рейсе)
+model Cargo {
+    id   String @id @default(uuid())
+    name String @unique
+
+    nationalCode      String @unique @map("national_code")
+    internationalCode String @unique @map("international_code")
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    wagonStates WagonState[] // где и когда использовался
+}
+
+// Станция
+model Station {
+    id String @id @default(uuid())
+
+    name String
+
+    code String? @unique
+
+    type StationType
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    wagonStates WagonState[] // фиксации вагонов на станции
+}
+
+// Рейс
+model Trip {
+    id String @id @default(uuid())
+
+    startedAt  DateTime
+    finishedAt DateTime?
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    wagonStates WagonState[] // все события рейса
+}
+
+// Состояние вагона в рейсе
+model WagonState {
+    id String @id @default(uuid())
+
+    wagonId String @map("wagon_id")
+    wagon   Wagon  @relation(fields: [wagonId], references: [id])
+
+    tripId String @map("trip_id")
+    trip   Trip   @relation(fields: [tripId], references: [id])
+
+    cargoId String? @map("cargo_id")
+    cargo   Cargo?  @relation(fields: [cargoId], references: [id])
+
+    isEmpty Boolean
+
+    stationId String?  @map("station_id")
+    station   Station? @relation(fields: [stationId], references: [id])
+
+    startedAt DateTime  @map("started_at")
+    endedAt   DateTime? @map("ended_at")
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    wagonOperations WagonOperation[]
+
+    @@index([wagonId])
+    @@index([tripId])
+    @@index([stationId])
+}
+
+// Тип операции
+model OperationType {
+    id        String            @id @default(uuid())
+    name      String
+    normative Decimal           @db.Decimal(10, 3)
+    category  OperationCategory
+
+    wagonOperations WagonOperation[]
+}
+
+// Операция с вагоном в рейсе
+model WagonOperation {
+    id String @id @default(uuid())
+
+    wagonStateId String
+    wagonState   WagonState @relation(fields: [wagonStateId], references: [id])
+
+    typeId String
+    type   OperationType @relation(fields: [typeId], references: [id])
+
+    startedAt DateTime  @map("started_at")
+    endedAt   DateTime? @map("ended_at")
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+enum OperationCategory {
+    ACTIVE // полезная операция (погрузка, взвешивание)
+    PASSIVE // ожидание, технический простой
+}
+
+enum StationType {
+    INTERNAL
+    EXTERNAL
+}
