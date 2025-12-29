@@ -1,0 +1,29 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build
+dist/
+build/
+out/
+
+# env
+.env
+.env.*
+
+# logs
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Nest
+apps/backend/dist/
+
+# Vite
+apps/frontend/dist/
