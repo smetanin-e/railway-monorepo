@@ -7,4 +7,10 @@ export class WagonTypeModel {
 
   @Field(() => String)
   name!: string;
+
+  @Field(() => Date)
+  createdAt!: Date;
+
+  @Field(() => Date)
+  updatedAt!: Date;
 }

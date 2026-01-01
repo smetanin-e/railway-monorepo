@@ -11,7 +11,7 @@ import { WagonTypeModule } from './wagon-type/wagon-type.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     GraphQLModule.forRootAsync({
       driver: ApolloDriver,
       useFactory: getGraphQLConfig,
