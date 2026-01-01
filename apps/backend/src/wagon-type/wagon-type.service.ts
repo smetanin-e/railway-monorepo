@@ -44,31 +44,30 @@ export class WagonTypeService {
     return wagonType;
   }
 
-  async create(createWagonTypeInput: CreateWagonTypeInput) {
+  async create(createWagonTypeInput: CreateWagonTypeInput): Promise<WagonType> {
     return await this.prisma.wagonType
       .create({
         data: createWagonTypeInput,
       })
-      .catch((e) =>
+      .catch((e) => {
         this.handlePrismaError(e, {
           unique: 'Такой тип вагона уже существует',
-        }),
-      );
+        });
+        throw e;
+      });
   }
 
-  async update(updateWagonTypeInput: UpdateWagonTypeInput) {
+  async update(updateWagonTypeInput: UpdateWagonTypeInput): Promise<WagonType> {
     const { id, name } = updateWagonTypeInput;
-    try {
-      return await this.prisma.wagonType.update({
-        where: { id },
-        data: { name },
+    return this.prisma.wagonType
+      .update({ where: { id }, data: { name } })
+      .catch((e) => {
+        this.handlePrismaError(e, {
+          unique: `Тип вагона с именем "${name}" уже существует!`,
+          notFound: `Запись с id=${id} не найдена`,
+        });
+        throw e;
       });
-    } catch (e) {
-      this.handlePrismaError(e, {
-        unique: `Тип вагона с именем "${name}" уже существует!`,
-        notFound: `Запись с id=${id} не найдена`,
-      });
-    }
   }
 
   async delete(id: string): Promise<boolean> {
