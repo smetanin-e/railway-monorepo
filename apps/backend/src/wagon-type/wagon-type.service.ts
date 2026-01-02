@@ -10,7 +10,9 @@ export class WagonTypeService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(): Promise<WagonType[]> {
-    return await this.prisma.wagonType.findMany();
+    return await this.prisma.wagonType.findMany({
+      include: { wagons: { include: { owner: true } } },
+    });
   }
 
   async findOne(id: string): Promise<WagonType> {

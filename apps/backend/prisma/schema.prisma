@@ -1,136 +1,136 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+    provider = "postgresql"
 }
 
 model User {
-  id        String   @id @default(uuid())
-  firstName String   @map("first_name")
-  lastName  String   @map("last_name")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+    id        String   @id @default(uuid())
+    firstName String   @map("first_name")
+    lastName  String   @map("last_name")
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("users")
+    @@map("users")
 }
 
 model Wagon {
-  id         String       @id @default(uuid())
-  number     String       @unique
-  typeId     String       @map("type_id")
-  ownerId    String?      @map("owner_id")
-  barPackage Decimal      @map("bar_package") @db.Decimal(10, 3)
-  capacity   Decimal      @db.Decimal(10, 3)
-  volume     Decimal      @db.Decimal(10, 3)
-  createdAt  DateTime     @default(now()) @map("created_at")
-  updatedAt  DateTime     @updatedAt @map("updated_at")
-  owner      WagonOwner?  @relation(fields: [ownerId], references: [id])
-  type       WagonType    @relation(fields: [typeId], references: [id])
-  states     WagonState[]
+    id         String       @id @default(uuid())
+    number     String       @unique
+    typeId     String       @map("type_id")
+    ownerId    String       @map("owner_id")
+    barPackage Decimal      @map("bar_package") @db.Decimal(10, 3) //тара с бруса (т)
+    capacity   Decimal      @db.Decimal(10, 3) //Грузоподъемность (т)
+    volume     Decimal      @db.Decimal(10, 3) //Объем (м³)
+    createdAt  DateTime     @default(now()) @map("created_at")
+    updatedAt  DateTime     @updatedAt @map("updated_at")
+    owner      WagonOwner   @relation(fields: [ownerId], references: [id])
+    type       WagonType    @relation(fields: [typeId], references: [id])
+    states     WagonState[]
 
-  @@index([typeId])
-  @@index([ownerId])
+    @@index([typeId])
+    @@index([ownerId])
 }
 
 model WagonType {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  wagons    Wagon[]
+    id        String   @id @default(uuid())
+    name      String   @unique
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+    wagons    Wagon[]
 
-  @@map("wagon_types")
+    @@map("wagon_types")
 }
 
 model WagonOwner {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  wagons    Wagon[]
+    id        String   @id @default(uuid())
+    name      String   @unique
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+    wagons    Wagon[]
 
-  @@map("wagon_owner")
+    @@map("wagon_owner")
 }
 
 model Cargo {
-  id                String       @id @default(uuid())
-  name              String       @unique
-  nationalCode      String       @unique @map("national_code")
-  internationalCode String       @unique @map("international_code")
-  createdAt         DateTime     @default(now()) @map("created_at")
-  updatedAt         DateTime     @updatedAt @map("updated_at")
-  wagonStates       WagonState[]
+    id                String       @id @default(uuid())
+    name              String       @unique
+    nationalCode      String       @unique @map("national_code")
+    internationalCode String       @unique @map("international_code")
+    createdAt         DateTime     @default(now()) @map("created_at")
+    updatedAt         DateTime     @updatedAt @map("updated_at")
+    wagonStates       WagonState[]
 }
 
 model Station {
-  id          String       @id @default(uuid())
-  name        String
-  code        String?      @unique
-  type        StationType
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
-  wagonStates WagonState[]
+    id          String       @id @default(uuid())
+    name        String
+    code        String?      @unique
+    type        StationType
+    createdAt   DateTime     @default(now()) @map("created_at")
+    updatedAt   DateTime     @updatedAt @map("updated_at")
+    wagonStates WagonState[]
 }
 
 model Trip {
-  id          String       @id @default(uuid())
-  startedAt   DateTime
-  finishedAt  DateTime?
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
-  wagonStates WagonState[]
+    id          String       @id @default(uuid())
+    startedAt   DateTime
+    finishedAt  DateTime?
+    createdAt   DateTime     @default(now()) @map("created_at")
+    updatedAt   DateTime     @updatedAt @map("updated_at")
+    wagonStates WagonState[]
 }
 
 model WagonState {
-  id              String           @id @default(uuid())
-  wagonId         String           @map("wagon_id")
-  tripId          String           @map("trip_id")
-  cargoId         String?          @map("cargo_id")
-  isEmpty         Boolean
-  stationId       String?          @map("station_id")
-  startedAt       DateTime         @map("started_at")
-  endedAt         DateTime?        @map("ended_at")
-  createdAt       DateTime         @default(now()) @map("created_at")
-  updatedAt       DateTime         @updatedAt @map("updated_at")
-  wagonOperations WagonOperation[]
-  cargo           Cargo?           @relation(fields: [cargoId], references: [id])
-  station         Station?         @relation(fields: [stationId], references: [id])
-  trip            Trip             @relation(fields: [tripId], references: [id])
-  wagon           Wagon            @relation(fields: [wagonId], references: [id])
+    id              String           @id @default(uuid())
+    wagonId         String           @map("wagon_id")
+    tripId          String           @map("trip_id")
+    cargoId         String?          @map("cargo_id")
+    isEmpty         Boolean
+    stationId       String?          @map("station_id")
+    startedAt       DateTime         @map("started_at")
+    endedAt         DateTime?        @map("ended_at")
+    createdAt       DateTime         @default(now()) @map("created_at")
+    updatedAt       DateTime         @updatedAt @map("updated_at")
+    wagonOperations WagonOperation[]
+    cargo           Cargo?           @relation(fields: [cargoId], references: [id])
+    station         Station?         @relation(fields: [stationId], references: [id])
+    trip            Trip             @relation(fields: [tripId], references: [id])
+    wagon           Wagon            @relation(fields: [wagonId], references: [id])
 
-  @@index([wagonId])
-  @@index([tripId])
-  @@index([stationId])
+    @@index([wagonId])
+    @@index([tripId])
+    @@index([stationId])
 }
 
 model OperationType {
-  id              String            @id @default(uuid())
-  name            String
-  normative       Decimal           @db.Decimal(10, 3)
-  category        OperationCategory
-  wagonOperations WagonOperation[]
+    id              String            @id @default(uuid())
+    name            String
+    normative       Decimal           @db.Decimal(10, 3)
+    category        OperationCategory
+    wagonOperations WagonOperation[]
 }
 
 model WagonOperation {
-  id           String        @id @default(uuid())
-  wagonStateId String
-  typeId       String
-  startedAt    DateTime      @map("started_at")
-  endedAt      DateTime?     @map("ended_at")
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
-  type         OperationType @relation(fields: [typeId], references: [id])
-  wagonState   WagonState    @relation(fields: [wagonStateId], references: [id])
+    id           String        @id @default(uuid())
+    wagonStateId String
+    typeId       String
+    startedAt    DateTime      @map("started_at")
+    endedAt      DateTime?     @map("ended_at")
+    createdAt    DateTime      @default(now()) @map("created_at")
+    updatedAt    DateTime      @updatedAt @map("updated_at")
+    type         OperationType @relation(fields: [typeId], references: [id])
+    wagonState   WagonState    @relation(fields: [wagonStateId], references: [id])
 }
 
 enum OperationCategory {
-  ACTIVE
-  PASSIVE
+    ACTIVE
+    PASSIVE
 }
 
 enum StationType {
-  INTERNAL
-  EXTERNAL
+    INTERNAL
+    EXTERNAL
 }

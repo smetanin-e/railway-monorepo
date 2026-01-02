@@ -24,11 +24,11 @@ export class WagonOwnerService {
   }
 
   async create(
-    createWagonOwnernput: CreateWagonOwnerInput,
+    createWagonOwneIrnput: CreateWagonOwnerInput,
   ): Promise<WagonOwner> {
     try {
       return await this.prisma.wagonOwner.create({
-        data: createWagonOwnernput,
+        data: createWagonOwneIrnput,
       });
     } catch (e) {
       handlePrismaError(e, {

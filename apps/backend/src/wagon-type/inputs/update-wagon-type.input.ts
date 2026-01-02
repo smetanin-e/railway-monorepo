@@ -3,6 +3,8 @@ import { CreateWagonTypeInput } from './create-wagon-type.input';
 
 @InputType()
 export class UpdateWagonTypeInput extends PartialType(CreateWagonTypeInput) {
-  @Field(() => ID)
+  @Field(() => ID, {
+    description: 'ID типа вагона',
+  })
   id!: string;
 }

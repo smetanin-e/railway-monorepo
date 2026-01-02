@@ -1,11 +1,12 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { WagonModel } from 'src/wagon/model/wagon.model';
 
-@ObjectType()
+@ObjectType({ description: 'Владелец вагона' })
 export class WagonOwnerModel {
-  @Field(() => String)
+  @Field(() => ID, { description: 'UUID владельца вагона' })
   id!: string;
 
-  @Field(() => String)
+  @Field(() => String, { description: 'Название владельца вагона' })
   name!: string;
 
   @Field(() => Date)
@@ -13,4 +14,10 @@ export class WagonOwnerModel {
 
   @Field(() => Date)
   updatedAt!: Date;
+
+  @Field(() => [WagonModel], {
+    nullable: true,
+    description: 'Связь с вагоноами',
+  })
+  wagons?: [WagonModel] | null;
 }

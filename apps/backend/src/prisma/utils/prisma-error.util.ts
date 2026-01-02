@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 type PrismaErrorMessages = {
   unique?: string;
   notFound?: string;
+  foreignKey?: string;
 };
 
 export function handlePrismaError(
@@ -21,6 +22,12 @@ export function handlePrismaError(
       case 'P2025':
         if (messages.notFound) {
           throw new NotFoundException(messages.notFound);
+        }
+        break;
+
+      case 'P2003':
+        if (messages.foreignKey) {
+          throw new BadRequestException(messages.foreignKey);
         }
         break;
     }

@@ -2,7 +2,30 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""Данные для создания вагона"""
+input CreateWagonInput {
+  """Тара с бруса (т)"""
+  barPackage: Float!
+
+  """Грузоподъемность (т)"""
+  capacity: Float!
+
+  """Номер вагона (уникальный)"""
+  number: String!
+
+  """ID владельца вагона"""
+  ownerId: String!
+
+  """ID типа вагона"""
+  typeId: String!
+
+  """Объем (м³)"""
+  volume: Float!
+}
+
+"""Данные для создания владельца вагона"""
 input CreateWagonOwnerInput {
+  """Название владельца вагона (уникальное)"""
   name: String!
 }
 
@@ -18,6 +41,9 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Mutation {
+  """Добавить новый вагон"""
+  createWagon(create: CreateWagonInput!): WagonModel!
+
   """Создать новый тип вагона"""
   createWagonOwner(create: CreateWagonOwnerInput!): WagonOwnerModel!
 
@@ -38,6 +64,9 @@ type Mutation {
 }
 
 type Query {
+  """Получить один вагон по ID"""
+  findOneWagon(id: ID!): WagonModel!
+
   """Получить собственника вагона по ID"""
   findOneWagonOwner(id: ID!): WagonOwnerModel!
 
@@ -49,25 +78,73 @@ type Query {
 
   """Получить список всех типов вагонов"""
   getWagonTypes: [WagonTypeModel!]!
+
+  """Получить список всех вагонов"""
+  getWagons: [WagonModel!]!
 }
 
+"""Данные для обновления владельца вагона"""
 input UpdateWagonOwnerInput {
+  """ID владельца вагона"""
   id: ID!
+
+  """Название владельца вагона (уникальное)"""
   name: String
 }
 
 input UpdateWagonTypeInput {
+  """ID типа вагона"""
   id: ID!
 
   """Название типа вагона (уникальное)"""
   name: String
 }
 
+"""Вагона"""
+type WagonModel {
+  """Тара с бруса (т)"""
+  barPackage: Float!
+
+  """Грузоподъемность (т)"""
+  capacity: Float!
+  createdAt: DateTime!
+
+  """UUID вагона"""
+  id: ID!
+
+  """Номер вагона (строка)"""
+  number: String!
+
+  """Связь с владельцем вагона"""
+  owner: WagonOwnerModel
+
+  """ID владельца вагона"""
+  ownerId: String!
+
+  """Связь с типом вагона"""
+  type: WagonTypeModel
+
+  """ID типа вагона"""
+  typeId: String!
+  updatedAt: DateTime!
+
+  """Объем (м³)"""
+  volume: Float!
+}
+
+"""Владелец вагона"""
 type WagonOwnerModel {
   createdAt: DateTime!
-  id: String!
+
+  """UUID владельца вагона"""
+  id: ID!
+
+  """Название владельца вагона"""
   name: String!
   updatedAt: DateTime!
+
+  """Связь с вагоноами"""
+  wagons: [WagonModel!]
 }
 
 """Тип вагона"""
@@ -75,9 +152,12 @@ type WagonTypeModel {
   createdAt: DateTime!
 
   """UUID типа вагона"""
-  id: String!
+  id: ID!
 
   """Название типа вагона"""
   name: String!
   updatedAt: DateTime!
+
+  """Связь с вагоноами"""
+  wagons: [WagonModel!]
 }
