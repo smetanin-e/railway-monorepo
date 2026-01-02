@@ -2,7 +2,13 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateWagonOwnerInput {
+  name: String!
+}
+
+"""Данные для создания типа вагона"""
 input CreateWagonTypeInput {
+  """Название типа вагона (уникальное)"""
   name: String!
 }
 
@@ -12,24 +18,66 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Mutation {
-  createWagonType(createWagonTypeInput: CreateWagonTypeInput!): WagonTypeModel!
+  """Создать новый тип вагона"""
+  createWagonOwner(create: CreateWagonOwnerInput!): WagonOwnerModel!
+
+  """Создать новый тип вагона"""
+  createWagonType(create: CreateWagonTypeInput!): WagonTypeModel!
+
+  """Удалить тип вагона по его ID"""
+  removeOwner(id: ID!): Boolean!
+
+  """Удалить тип вагона по его ID"""
   removeWagon(id: ID!): Boolean!
-  updateWagonType(updateWagonTypeInput: UpdateWagonTypeInput!): WagonTypeModel!
+
+  """Обновить собственника вагона по его ID"""
+  updateWagonOwner(update: UpdateWagonOwnerInput!): WagonOwnerModel!
+
+  """Обновить тип вагона по ID"""
+  updateWagonType(update: UpdateWagonTypeInput!): WagonTypeModel!
 }
 
 type Query {
-  wagon_type(id: ID!): WagonTypeModel!
-  wagon_types: [WagonTypeModel!]!
+  """Получить собственника вагона по ID"""
+  findOneWagonOwner(id: ID!): WagonOwnerModel!
+
+  """Получить тип вагона по его ID"""
+  findOneWagonType(id: ID!): WagonTypeModel!
+
+  """Получить список всех собственников вагонов"""
+  getWagonOwners: [WagonOwnerModel!]!
+
+  """Получить список всех типов вагонов"""
+  getWagonTypes: [WagonTypeModel!]!
 }
 
-input UpdateWagonTypeInput {
+input UpdateWagonOwnerInput {
   id: ID!
   name: String
 }
 
-type WagonTypeModel {
+input UpdateWagonTypeInput {
+  id: ID!
+
+  """Название типа вагона (уникальное)"""
+  name: String
+}
+
+type WagonOwnerModel {
   createdAt: DateTime!
   id: String!
+  name: String!
+  updatedAt: DateTime!
+}
+
+"""Тип вагона"""
+type WagonTypeModel {
+  createdAt: DateTime!
+
+  """UUID типа вагона"""
+  id: String!
+
+  """Название типа вагона"""
   name: String!
   updatedAt: DateTime!
 }

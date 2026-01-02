@@ -8,6 +8,7 @@ import { getGraphQLConfig } from './config/graphql.config';
 import { ApolloDriver } from '@nestjs/apollo';
 import { WagonModule } from './wagon/wagon.module';
 import { WagonTypeModule } from './wagon-type/wagon-type.module';
+import { WagonOwnerModule } from './wagon-owner/wagon-owner.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { WagonTypeModule } from './wagon-type/wagon-type.module';
     PrismaModule,
     WagonModule,
     WagonTypeModule,
+    WagonOwnerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

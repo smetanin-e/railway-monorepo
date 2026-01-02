@@ -1,11 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
-@ObjectType()
+@ObjectType({ description: 'Тип вагона' })
 export class WagonTypeModel {
-  @Field(() => String)
+  @Field(() => String, { description: 'UUID типа вагона' })
   id!: string;
 
-  @Field(() => String)
+  @Field(() => String, { description: 'Название типа вагона' })
   name!: string;
 
   @Field(() => Date)
