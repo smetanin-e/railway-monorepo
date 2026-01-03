@@ -91,6 +91,9 @@ type Query {
   """Получить тип вагона по его ID"""
   findOneWagonType(id: ID!): WagonTypeModel!
 
+  """Получить список всех станций"""
+  getStations: [StationModel!]!
+
   """Получить список всех собственников вагонов"""
   getWagonOwners: [WagonOwnerModel!]!
 

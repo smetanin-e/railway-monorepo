@@ -3,11 +3,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Station } from '@prisma/client';
+import { Station, StationType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateStationInput } from './inputs/create-station.input';
 import { handlePrismaError } from 'src/prisma/utils/prisma-error.util';
-import { createStationSchema } from '@railway/shared';
 
 @Injectable()
 export class StationService {
@@ -28,18 +27,13 @@ export class StationService {
   }
 
   async create(input: CreateStationInput): Promise<Station> {
-    const parsed = createStationSchema.safeParse(input);
-
-    if (!parsed.success) {
-      //TODO  Настроить валидацию через pipe
-      throw new BadRequestException({
-        message: 'Ошибка валидации',
-      });
-    }
-
     try {
       return await this.prisma.station.create({
-        data: parsed.data,
+        data: {
+          name: input.name,
+          type: input.type,
+          code: input.type === StationType.EXTERNAL ? input.code : null,
+        },
       });
     } catch (e) {
       handlePrismaError(e, {
