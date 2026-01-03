@@ -1,19 +1,11 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { extend, Field, ID, ObjectType } from '@nestjs/graphql';
+import { BaseModel } from 'src/common/base.model';
 import { WagonModel } from 'src/wagon/model/wagon.model';
 
 @ObjectType({ description: 'Тип вагона' })
-export class WagonTypeModel {
-  @Field(() => ID, { description: 'UUID типа вагона' })
-  id!: string;
-
+export class WagonTypeModel extends BaseModel {
   @Field(() => String, { description: 'Название типа вагона' })
   name!: string;
-
-  @Field(() => Date)
-  createdAt!: Date;
-
-  @Field(() => Date)
-  updatedAt!: Date;
 
   @Field(() => [WagonModel], {
     nullable: true,

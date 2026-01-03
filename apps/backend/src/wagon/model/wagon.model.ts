@@ -1,12 +1,10 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
+import { BaseModel } from 'src/common/base.model';
 import { WagonOwnerModel } from 'src/wagon-owner/model/wagon-owner-model';
 import { WagonTypeModel } from 'src/wagon-type/model/wagon-type.model';
 
 @ObjectType({ description: 'Модель вагона' })
-export class WagonModel {
-  @Field(() => ID, { description: 'UUID вагона' })
-  id!: string;
-
+export class WagonModel extends BaseModel {
   @Field(() => String, { description: 'Номер вагона (строка)' })
   number!: string;
 
@@ -36,10 +34,4 @@ export class WagonModel {
 
   @Field(() => Float, { description: 'Объем (м³)' })
   volume!: number;
-
-  @Field(() => Date)
-  createdAt!: Date;
-
-  @Field(() => Date)
-  updatedAt!: Date;
 }

@@ -2,6 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""Данные для создания станции"""
+input CreateStationInput {
+  """Код снанции (только для "EXTERNAL")"""
+  code: String
+
+  """Название станции (уникальное)"""
+  name: String!
+
+  """Тип станции ("INTERNAL" | "EXTERNAL")"""
+  type: StationType!
+}
+
 """Данные для создания вагона"""
 input CreateWagonInput {
   """Тара с бруса (т)"""
@@ -41,6 +53,9 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Mutation {
+  """Добавить новую станцию"""
+  createStation(create: CreateStationInput!): StationModel!
+
   """Добавить новый вагон"""
   createWagon(create: CreateWagonInput!): WagonModel!
 
@@ -86,6 +101,27 @@ type Query {
   getWagons: [WagonModel!]!
 }
 
+"""Модель станции"""
+type StationModel {
+  """Код снанции (только для внешних станций)"""
+  code: String
+  createdAt: DateTime!
+  id: ID!
+
+  """Название станции (строка)"""
+  name: String!
+
+  """Тип станции (внешняя или внутренняя)"""
+  type: StationType!
+  updatedAt: DateTime!
+}
+
+"""Тип станции (внутренняя / внешняя)"""
+enum StationType {
+  EXTERNAL
+  INTERNAL
+}
+
 """Данные для обновления информации о вагоне"""
 input UpdateWagonInput {
   """Тара с бруса (т)"""
@@ -127,7 +163,7 @@ input UpdateWagonTypeInput {
   name: String
 }
 
-"""Вагона"""
+"""Модель вагона"""
 type WagonModel {
   """Тара с бруса (т)"""
   barPackage: Float!
@@ -135,8 +171,6 @@ type WagonModel {
   """Грузоподъемность (т)"""
   capacity: Float!
   createdAt: DateTime!
-
-  """UUID вагона"""
   id: ID!
 
   """Номер вагона (строка)"""
@@ -162,8 +196,6 @@ type WagonModel {
 """Владелец вагона"""
 type WagonOwnerModel {
   createdAt: DateTime!
-
-  """UUID владельца вагона"""
   id: ID!
 
   """Название владельца вагона"""
@@ -177,8 +209,6 @@ type WagonOwnerModel {
 """Тип вагона"""
 type WagonTypeModel {
   createdAt: DateTime!
-
-  """UUID типа вагона"""
   id: ID!
 
   """Название типа вагона"""
