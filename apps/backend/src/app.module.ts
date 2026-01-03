@@ -9,6 +9,7 @@ import { ApolloDriver } from '@nestjs/apollo';
 import { WagonModule } from './wagon/wagon.module';
 import { WagonTypeModule } from './wagon-type/wagon-type.module';
 import { WagonOwnerModule } from './wagon-owner/wagon-owner.module';
+import { StationModule } from './station/station.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { WagonOwnerModule } from './wagon-owner/wagon-owner.module';
     WagonModule,
     WagonTypeModule,
     WagonOwnerModule,
+    StationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

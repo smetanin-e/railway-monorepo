@@ -2,7 +2,7 @@ import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { WagonOwnerModel } from 'src/wagon-owner/model/wagon-owner-model';
 import { WagonTypeModel } from 'src/wagon-type/model/wagon-type.model';
 
-@ObjectType({ description: 'Вагона' })
+@ObjectType({ description: 'Модель вагона' })
 export class WagonModel {
   @Field(() => ID, { description: 'UUID вагона' })
   id!: string;
