@@ -54,7 +54,10 @@ type Mutation {
   removeOwner(id: ID!): Boolean!
 
   """Удалить тип вагона по его ID"""
-  removeWagon(id: ID!): Boolean!
+  removeWagonType(id: ID!): Boolean!
+
+  """Обновить информацию о вагоне"""
+  updateWagon(update: UpdateWagonInput!): WagonModel!
 
   """Обновить собственника вагона по его ID"""
   updateWagonOwner(update: UpdateWagonOwnerInput!): WagonOwnerModel!
@@ -81,6 +84,30 @@ type Query {
 
   """Получить список всех вагонов"""
   getWagons: [WagonModel!]!
+}
+
+"""Данные для обновления информации о вагоне"""
+input UpdateWagonInput {
+  """Тара с бруса (т)"""
+  barPackage: Float
+
+  """Грузоподъемность (т)"""
+  capacity: Float
+
+  """ID вагона"""
+  id: ID!
+
+  """Номер вагона (уникальный)"""
+  number: String
+
+  """ID владельца вагона"""
+  ownerId: String
+
+  """ID типа вагона"""
+  typeId: String
+
+  """Объем (м³)"""
+  volume: Float
 }
 
 """Данные для обновления владельца вагона"""

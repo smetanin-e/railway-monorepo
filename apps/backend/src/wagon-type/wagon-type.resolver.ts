@@ -40,7 +40,7 @@ export class WagonTypeResolver {
   @Mutation(() => Boolean, {
     description: 'Удалить тип вагона по его ID',
   })
-  removeWagon(@Args('id', { type: () => ID }) id: string) {
+  removeWagonType(@Args('id', { type: () => ID }) id: string) {
     return this.wagonTypeService.delete(id);
   }
 }

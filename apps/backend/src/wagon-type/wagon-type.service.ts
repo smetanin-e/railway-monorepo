@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateWagonTypeInput } from './inputs/create-wagon-type.input';
 import { WagonType } from '@prisma/client';
@@ -54,6 +58,16 @@ export class WagonTypeService {
 
   async delete(id: string): Promise<boolean> {
     const wagonType = await this.findOne(id);
+
+    const wagonsCount = await this.prisma.wagon.count({
+      where: { typeId: wagonType.id },
+    });
+
+    if (wagonsCount > 0) {
+      throw new BadRequestException(
+        'Невозможно удалить тип вагона: к нему привязаны вагоны',
+      );
+    }
 
     await this.prisma.wagonType.delete({
       where: { id: wagonType.id },

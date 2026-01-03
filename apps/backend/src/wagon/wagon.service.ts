@@ -49,6 +49,8 @@ export class WagonService {
     }
   }
 
+  //TODO Добавить условия (Если у вагона был рейс - запретить обновление. Вопрос по смене типа и владельца)
+  //TODO Меняется ли грузоподъемность и тара с бруса и объем?
   async update(updateWagonInput: UpdateWagonInput): Promise<Wagon> {
     const { id, ...data } = updateWagonInput;
     try {
@@ -66,6 +68,8 @@ export class WagonService {
 
   async delete(id: string): Promise<boolean> {
     const wagon = await this.findOne(id);
+
+    //TODO Добавить условие (Если у вагона был рейс - запретить удаление!)
 
     await this.prisma.wagon.delete({
       where: { id: wagon.id },

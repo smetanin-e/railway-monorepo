@@ -26,8 +26,8 @@ model Wagon {
     volume     Decimal      @db.Decimal(10, 3) //Объем (м³)
     createdAt  DateTime     @default(now()) @map("created_at")
     updatedAt  DateTime     @updatedAt @map("updated_at")
-    owner      WagonOwner   @relation(fields: [ownerId], references: [id])
-    type       WagonType    @relation(fields: [typeId], references: [id])
+    owner      WagonOwner   @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+    type       WagonType    @relation(fields: [typeId], references: [id], onDelete: Restrict)
     states     WagonState[]
 
     @@index([typeId])

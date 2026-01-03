@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { WagonOwner } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateWagonOwnerInput } from './inputs/create-wagon-owner.input';
@@ -10,7 +14,9 @@ export class WagonOwnerService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(): Promise<WagonOwner[]> {
-    return await this.prisma.wagonOwner.findMany();
+    return await this.prisma.wagonOwner.findMany({
+      include: { wagons: { include: { type: true } } },
+    });
   }
 
   async findOne(id: string): Promise<WagonOwner> {
@@ -56,6 +62,16 @@ export class WagonOwnerService {
 
   async delete(id: string): Promise<boolean> {
     const wagonOwner = await this.findOne(id);
+
+    const wagonsCount = await this.prisma.wagon.count({
+      where: { typeId: wagonOwner.id },
+    });
+
+    if (wagonsCount > 0) {
+      throw new BadRequestException(
+        'Невозможно удалить владельца вагона: к нему привязаны вагоны',
+      );
+    }
 
     await this.prisma.wagonOwner.delete({
       where: { id: wagonOwner.id },
