@@ -11,3 +11,8 @@ pnpm --filter frontend dev
 1️⃣ @ResolveField() для owner/type
 2️⃣ N+1 проблема и DataLoader (спокойно, без боли)
 3️⃣ Связь Wagon → WagonState[]
+
+
+остановился на:
+    zod схемы и pipes для вагона и владельца вагона
+    

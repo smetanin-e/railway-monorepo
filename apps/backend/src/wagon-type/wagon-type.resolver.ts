@@ -2,10 +2,10 @@ import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { WagonTypeService } from './wagon-type.service';
 import { WagonTypeModel } from './model/wagon-type.model';
 import { CreateWagonTypeInput } from './inputs/create-wagon-type.input';
-import { UpdateWagonTypeInput } from './inputs/update-wagon-type.input';
 import { UsePipes } from '@nestjs/common';
 import { CreateWagonTypePipe } from './pipes/create-wagon-type.pipe';
 import { UpdateWagonTypePipe } from './pipes/update-wagon-type.pipe';
+import { UpdateWagonTypeInput } from './inputs/update-wagon-type.input';
 
 @Resolver(() => WagonTypeModel)
 export class WagonTypeResolver {
@@ -30,16 +30,18 @@ export class WagonTypeResolver {
     description: 'Создать новый тип вагона',
   })
   @UsePipes(new CreateWagonTypePipe())
-  createWagonType(@Args('create') input: CreateWagonTypeInput) {
+  createWagonType(@Args('data') input: CreateWagonTypeInput) {
     return this.wagonTypeService.create(input);
   }
 
   @Mutation(() => WagonTypeModel, {
     description: 'Обновить тип вагона по ID',
   })
-  @UsePipes(new UpdateWagonTypePipe())
-  updateWagonType(@Args('update') input: UpdateWagonTypeInput) {
-    return this.wagonTypeService.update(input);
+  updateWagonType(
+    @Args('id', { type: () => ID }) id: string,
+    @Args('data', new UpdateWagonTypePipe()) input: UpdateWagonTypeInput,
+  ) {
+    return this.wagonTypeService.update(id, input);
   }
 
   @Mutation(() => Boolean, {

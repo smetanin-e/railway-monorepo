@@ -1,10 +1,17 @@
-import { Field, ID, InputType, PartialType } from '@nestjs/graphql';
-import { CreateWagonTypeInput } from './create-wagon-type.input';
+import { Field, InputType } from '@nestjs/graphql';
 
-@InputType()
-export class UpdateWagonTypeInput extends PartialType(CreateWagonTypeInput) {
-  @Field(() => ID, {
-    description: 'ID типа вагона',
+@InputType({ description: 'Данные для создания типа вагона' })
+export class UpdateWagonTypeInput {
+  @Field(() => String, {
+    nullable: true,
+    description: 'Название типа вагона (уникальное)',
   })
-  id!: string;
+  name!: string;
+
+  @Field(() => String, {
+    nullable: true,
+    description:
+      'Префикс для нумерации вагона(Только цифры. Например "3" или "34")',
+  })
+  numberPrefix!: string;
 }

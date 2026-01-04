@@ -35,13 +35,15 @@ model Wagon {
 }
 
 model WagonType {
-    id        String   @id @default(uuid())
-    name      String   @unique
+    id           String @id @default(uuid())
+    name         String @unique
+    numberPrefix String @map("number_prefix") // Префикс с которого должен начинаться номер вагона. Например: "3" или "34" - 3 или 4
+
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
     wagons    Wagon[]
 
-    @@map("wagon_types")
+    @@map("Wagon_types")
 }
 
 model WagonOwner {
@@ -51,7 +53,7 @@ model WagonOwner {
     updatedAt DateTime @updatedAt @map("updated_at")
     wagons    Wagon[]
 
-    @@map("wagon_owner")
+    @@map("Wagon_owner")
 }
 
 model Cargo {
@@ -105,6 +107,7 @@ model WagonState {
     @@index([wagonId])
     @@index([tripId])
     @@index([stationId])
+    @@map("Wagon_state")
 }
 
 model OperationType {
@@ -113,6 +116,8 @@ model OperationType {
     normative       Decimal           @db.Decimal(10, 3)
     category        OperationCategory
     wagonOperations WagonOperation[]
+
+    @@map("Operation_type")
 }
 
 model WagonOperation {
@@ -125,6 +130,8 @@ model WagonOperation {
     updatedAt    DateTime      @updatedAt @map("updated_at")
     type         OperationType @relation(fields: [typeId], references: [id])
     wagonState   WagonState    @relation(fields: [wagonStateId], references: [id])
+
+    @@map("Wagon_operation")
 }
 
 enum OperationCategory {

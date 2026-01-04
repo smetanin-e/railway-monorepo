@@ -7,6 +7,9 @@ export class WagonTypeModel extends BaseModel {
   @Field(() => String, { description: 'Название типа вагона' })
   name!: string;
 
+  @Field(() => String, { description: 'Префикс для нумерации вагона' })
+  numberPrefix!: string;
+
   @Field(() => [WagonModel], {
     nullable: true,
     description: 'Связь с вагоноами',

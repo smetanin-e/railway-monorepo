@@ -6,8 +6,8 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateWagonTypeInput } from './inputs/create-wagon-type.input';
 import { WagonType } from '@prisma/client';
-import { UpdateWagonTypeInput } from './inputs/update-wagon-type.input';
 import { handlePrismaError } from 'src/prisma/utils/prisma-error.util';
+import { UpdateWagonTypeInput } from '@railway/shared';
 
 @Injectable()
 export class WagonTypeService {
@@ -29,10 +29,10 @@ export class WagonTypeService {
     return wagonType;
   }
 
-  async create(createWagonTypeInput: CreateWagonTypeInput): Promise<WagonType> {
+  async create(data: CreateWagonTypeInput): Promise<WagonType> {
     try {
       return await this.prisma.wagonType.create({
-        data: createWagonTypeInput,
+        data,
       });
     } catch (e) {
       handlePrismaError(e, {
@@ -41,16 +41,19 @@ export class WagonTypeService {
     }
   }
 
-  async update(updateWagonTypeInput: UpdateWagonTypeInput): Promise<WagonType> {
-    const { id, name } = updateWagonTypeInput;
+  async update(id: string, data: UpdateWagonTypeInput): Promise<WagonType> {
     try {
+      const updateData = Object.fromEntries(
+        Object.entries(data).filter(([_, value]) => value !== undefined),
+      );
+
       return await this.prisma.wagonType.update({
         where: { id },
-        data: { name },
+        data: updateData,
       });
     } catch (e) {
       handlePrismaError(e, {
-        unique: `Тип вагона с именем "${name}" уже существует`,
+        unique: `Тип вагона с именем "${data.name}" уже существует`,
         notFound: `Запись с id=${id} не найдена`,
       });
     }
