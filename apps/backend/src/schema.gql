@@ -68,6 +68,9 @@ type Mutation {
   """Удалить тип вагона по его ID"""
   removeOwner(id: ID!): Boolean!
 
+  """Удалить станцию по ID"""
+  removeStation(id: ID!): Boolean!
+
   """Удалить тип вагона по его ID"""
   removeWagonType(id: ID!): Boolean!
 
@@ -82,6 +85,9 @@ type Mutation {
 }
 
 type Query {
+  """Получить одну станцию по ID"""
+  findOneStation(id: ID!): StationModel!
+
   """Получить один вагон по ID"""
   findOneWagon(id: ID!): WagonModel!
 
