@@ -29,11 +29,7 @@ export class StationService {
   async create(input: CreateStationInput): Promise<Station> {
     try {
       return await this.prisma.station.create({
-        data: {
-          name: input.name,
-          type: input.type,
-          code: input.type === StationType.EXTERNAL ? input.code : null,
-        },
+        data: input,
       });
     } catch (e) {
       handlePrismaError(e, {

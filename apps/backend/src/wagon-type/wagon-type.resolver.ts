@@ -3,6 +3,9 @@ import { WagonTypeService } from './wagon-type.service';
 import { WagonTypeModel } from './model/wagon-type.model';
 import { CreateWagonTypeInput } from './inputs/create-wagon-type.input';
 import { UpdateWagonTypeInput } from './inputs/update-wagon-type.input';
+import { UsePipes } from '@nestjs/common';
+import { CreateWagonTypePipe } from './pipes/create-wagon-type.pipe';
+import { UpdateWagonTypePipe } from './pipes/update-wagon-type.pipe';
 
 @Resolver(() => WagonTypeModel)
 export class WagonTypeResolver {
@@ -26,6 +29,7 @@ export class WagonTypeResolver {
   @Mutation(() => WagonTypeModel, {
     description: 'Создать новый тип вагона',
   })
+  @UsePipes(new CreateWagonTypePipe())
   createWagonType(@Args('create') input: CreateWagonTypeInput) {
     return this.wagonTypeService.create(input);
   }
@@ -33,6 +37,7 @@ export class WagonTypeResolver {
   @Mutation(() => WagonTypeModel, {
     description: 'Обновить тип вагона по ID',
   })
+  @UsePipes(new UpdateWagonTypePipe())
   updateWagonType(@Args('update') input: UpdateWagonTypeInput) {
     return this.wagonTypeService.update(input);
   }
