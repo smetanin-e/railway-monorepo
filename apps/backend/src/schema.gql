@@ -63,7 +63,7 @@ type Mutation {
   createWagon(create: CreateWagonInput!): WagonModel!
 
   """Создать новый тип вагона"""
-  createWagonOwner(create: CreateWagonOwnerInput!): WagonOwnerModel!
+  createWagonOwner(data: CreateWagonOwnerInput!): WagonOwnerModel!
 
   """Создать новый тип вагона"""
   createWagonType(data: CreateWagonTypeInput!): WagonTypeModel!
@@ -79,9 +79,6 @@ type Mutation {
 
   """Обновить информацию о вагоне"""
   updateWagon(update: UpdateWagonInput!): WagonModel!
-
-  """Обновить собственника вагона по его ID"""
-  updateWagonOwner(update: UpdateWagonOwnerInput!): WagonOwnerModel!
 
   """Обновить тип вагона по ID"""
   updateWagonType(data: UpdateWagonTypeInput!, id: ID!): WagonTypeModel!
@@ -156,15 +153,6 @@ input UpdateWagonInput {
 
   """Объем (м³)"""
   volume: Float
-}
-
-"""Данные для обновления владельца вагона"""
-input UpdateWagonOwnerInput {
-  """ID владельца вагона"""
-  id: ID!
-
-  """Название владельца вагона (уникальное)"""
-  name: String
 }
 
 """Данные для создания типа вагона"""

@@ -2,6 +2,7 @@ import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { WagonOwnerService } from './wagon-owner.service';
 import { WagonOwnerModel } from './model/wagon-owner-model';
 import { CreateWagonOwnerInput } from './inputs/create-wagon-owner.input';
+import { CreateWagonOwnerPipe } from './pipes/create-wagon-owner.pipe';
 
 @Resolver(() => WagonOwnerModel)
 export class WagonOwnerResolver {
@@ -25,7 +26,9 @@ export class WagonOwnerResolver {
   @Mutation(() => WagonOwnerModel, {
     description: 'Создать новый тип вагона',
   })
-  createWagonOwner(@Args('create') input: CreateWagonOwnerInput) {
+  createWagonOwner(
+    @Args('data', new CreateWagonOwnerPipe()) input: CreateWagonOwnerInput,
+  ) {
     return this.wagonOwnerService.create(input);
   }
 
