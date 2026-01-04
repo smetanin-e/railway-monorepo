@@ -16,7 +16,7 @@ export const createStationSchema = z.discriminatedUnion('type', [
     code: z
       .string()
       .trim()
-      .min(1, 'Код станции обязателен для внешних станций')
+      .min(1, 'Для внешних станций обязателен код')
       .max(50, 'Код станции не должен превышать 50 символов'),
   }),
 ]);
