@@ -78,7 +78,7 @@ type Mutation {
   removeWagonType(id: ID!): Boolean!
 
   """Обновить информацию о вагоне"""
-  updateWagon(update: UpdateWagonInput!): WagonModel!
+  updateWagon(data: UpdateWagonInput!, id: ID!): WagonModel!
 
   """Обновить тип вагона по ID"""
   updateWagonType(data: UpdateWagonTypeInput!, id: ID!): WagonTypeModel!
@@ -138,18 +138,6 @@ input UpdateWagonInput {
 
   """Грузоподъемность (т)"""
   capacity: Float
-
-  """ID вагона"""
-  id: ID!
-
-  """Номер вагона (уникальный)"""
-  number: String
-
-  """ID владельца вагона"""
-  ownerId: String
-
-  """ID типа вагона"""
-  typeId: String
 
   """Объем (м³)"""
   volume: Float

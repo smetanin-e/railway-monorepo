@@ -4,6 +4,7 @@ import { WagonModel } from './model/wagon.model';
 import { CreateWagonInput } from './inputs/create-wagon.input';
 import { UpdateWagonInput } from './inputs/update-wagon.input';
 import { CreateWagonPipe } from './pipes/create-wagon.pipe';
+import { UpdateWagonPipe } from './pipes/update-wagon.pipe';
 
 @Resolver(() => WagonModel)
 export class WagonResolver {
@@ -34,8 +35,11 @@ export class WagonResolver {
   @Mutation(() => WagonModel, {
     description: 'Обновить информацию о вагоне',
   })
-  updateWagon(@Args('update') input: UpdateWagonInput) {
-    return this.wagonService.update(input);
+  updateWagon(
+    @Args('id', { type: () => ID }) id: string,
+    @Args('data', new UpdateWagonPipe()) input: UpdateWagonInput,
+  ) {
+    return this.wagonService.update(id, input);
   }
 
   @Mutation(() => Boolean, {

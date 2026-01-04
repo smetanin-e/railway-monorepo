@@ -43,13 +43,9 @@ export class WagonTypeService {
 
   async update(id: string, data: UpdateWagonTypeInput): Promise<WagonType> {
     try {
-      const updateData = Object.fromEntries(
-        Object.entries(data).filter(([_, value]) => value !== undefined),
-      );
-
       return await this.prisma.wagonType.update({
         where: { id },
-        data: updateData,
+        data: data,
       });
     } catch (e) {
       handlePrismaError(e, {

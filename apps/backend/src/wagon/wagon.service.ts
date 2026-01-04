@@ -79,17 +79,19 @@ export class WagonService {
   }
 
   //TODO Добавить условия (Если у вагона был рейс - запретить обновление. Вопрос по смене типа и владельца)
-  //TODO Меняется ли грузоподъемность и тара с бруса и объем?
-  async update(updateWagonInput: UpdateWagonInput): Promise<Wagon> {
-    const { id, ...data } = updateWagonInput;
+  //* Меняем только грузоподъемность, тара с бруса и объем?
+  async update(id: string, data: UpdateWagonInput): Promise<Wagon> {
     try {
       return await this.prisma.wagon.update({
         where: { id },
         data,
+        include: {
+          owner: true,
+          type: true,
+        },
       });
     } catch (e) {
       handlePrismaError(e, {
-        unique: `Вагон номер "${data.number}" невозможно обновить. Причина: дублирование уникальных полей`,
         notFound: `Вагон с не найден`,
       });
     }
