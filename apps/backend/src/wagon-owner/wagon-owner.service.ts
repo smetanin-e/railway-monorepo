@@ -7,7 +7,6 @@ import { WagonOwner } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateWagonOwnerInput } from './inputs/create-wagon-owner.input';
 import { handlePrismaError } from 'src/prisma/utils/prisma-error.util';
-import { UpdateWagonOwnerInput } from './inputs/update-wagon-owner.input';
 
 @Injectable()
 export class WagonOwnerService {
@@ -43,22 +42,23 @@ export class WagonOwnerService {
     }
   }
 
-  async update(
-    updateWagonOwnerInput: UpdateWagonOwnerInput,
-  ): Promise<WagonOwner> {
-    const { id, name } = updateWagonOwnerInput;
-    try {
-      return await this.prisma.wagonOwner.update({
-        where: { id },
-        data: { name },
-      });
-    } catch (e) {
-      handlePrismaError(e, {
-        unique: `Собственник вагона с именем "${name}" уже существует`,
-        notFound: `Запись с id=${id} не найдена`,
-      });
-    }
-  }
+  //! Нет необходимости обновлять владельца вагона
+  //   async update(
+  //     updateWagonOwnerInput: UpdateWagonOwnerInput,
+  //   ): Promise<WagonOwner> {
+  //     const { id, name } = updateWagonOwnerInput;
+  //     try {
+  //       return await this.prisma.wagonOwner.update({
+  //         where: { id },
+  //         data: { name },
+  //       });
+  //     } catch (e) {
+  //       handlePrismaError(e, {
+  //         unique: `Собственник вагона с именем "${name}" уже существует`,
+  //         notFound: `Запись с id=${id} не найдена`,
+  //       });
+  //     }
+  //   }
 
   async delete(id: string): Promise<boolean> {
     const wagonOwner = await this.findOne(id);

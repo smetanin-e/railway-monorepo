@@ -2,7 +2,6 @@ import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { WagonOwnerService } from './wagon-owner.service';
 import { WagonOwnerModel } from './model/wagon-owner-model';
 import { CreateWagonOwnerInput } from './inputs/create-wagon-owner.input';
-import { UpdateWagonOwnerInput } from './inputs/update-wagon-owner.input';
 
 @Resolver(() => WagonOwnerModel)
 export class WagonOwnerResolver {
@@ -30,12 +29,13 @@ export class WagonOwnerResolver {
     return this.wagonOwnerService.create(input);
   }
 
-  @Mutation(() => WagonOwnerModel, {
-    description: 'Обновить собственника вагона по его ID',
-  })
-  updateWagonOwner(@Args('update') input: UpdateWagonOwnerInput) {
-    return this.wagonOwnerService.update(input);
-  }
+  //! Нет необходимости обновлять владельца вагона
+  //   @Mutation(() => WagonOwnerModel, {
+  //     description: 'Обновить собственника вагона по его ID',
+  //   })
+  //   updateWagonOwner(@Args('update') input: UpdateWagonOwnerInput) {
+  //     return this.wagonOwnerService.update(input);
+  //   }
 
   @Mutation(() => Boolean, {
     description: 'Удалить тип вагона по его ID',
