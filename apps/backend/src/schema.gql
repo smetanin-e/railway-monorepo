@@ -60,7 +60,7 @@ type Mutation {
   createStation(create: CreateStationInput!): StationModel!
 
   """Добавить новый вагон"""
-  createWagon(create: CreateWagonInput!): WagonModel!
+  createWagon(data: CreateWagonInput!): WagonModel!
 
   """Создать новый тип вагона"""
   createWagonOwner(data: CreateWagonOwnerInput!): WagonOwnerModel!

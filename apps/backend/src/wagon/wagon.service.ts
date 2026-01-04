@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Wagon } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateWagonInput } from './inputs/create-wagon.input';
 import { handlePrismaError } from 'src/prisma/utils/prisma-error.util';
 import { UpdateWagonInput } from './inputs/update-wagon.input';
+import { WagonNumberValidator } from './domain/wagon-number.validator';
 
 @Injectable()
 export class WagonService {
@@ -32,10 +37,34 @@ export class WagonService {
     return wagon;
   }
 
-  async create(createWagonInput: CreateWagonInput): Promise<Wagon> {
+  async create(data: CreateWagonInput): Promise<Wagon> {
     try {
+      const wagonType = await this.prisma.wagonType.findUnique({
+        where: { id: data.typeId },
+      });
+
+      if (!wagonType) {
+        throw new BadRequestException('Выбранный тип вагона не найден');
+      }
+
+      const isValidWagonNumber = WagonNumberValidator.validate(
+        data.number,
+        wagonType.numberPrefix,
+      );
+
+      if (!isValidWagonNumber) {
+        throw new BadRequestException('Номер вагона не соответствует типу');
+      }
+
       return await this.prisma.wagon.create({
-        data: createWagonInput,
+        data: {
+          number: data.number,
+          typeId: data.typeId,
+          ownerId: data.ownerId,
+          barPackage: data.barPackage,
+          capacity: data.capacity,
+          volume: data.volume,
+        },
         include: {
           owner: true,
           type: true,

@@ -3,6 +3,7 @@ import { WagonService } from './wagon.service';
 import { WagonModel } from './model/wagon.model';
 import { CreateWagonInput } from './inputs/create-wagon.input';
 import { UpdateWagonInput } from './inputs/update-wagon.input';
+import { CreateWagonPipe } from './pipes/create-wagon.pipe';
 
 @Resolver(() => WagonModel)
 export class WagonResolver {
@@ -26,7 +27,7 @@ export class WagonResolver {
   @Mutation(() => WagonModel, {
     description: 'Добавить новый вагон',
   })
-  createWagon(@Args('create') input: CreateWagonInput) {
+  createWagon(@Args('data', new CreateWagonPipe()) input: CreateWagonInput) {
     return this.wagonService.create(input);
   }
 
