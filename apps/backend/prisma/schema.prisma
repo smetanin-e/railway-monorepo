@@ -109,6 +109,7 @@ model WagonState {
     id              String           @id @default(uuid())
     wagonId         String           @map("wagon_id")
     tripId          String           @map("trip_id")
+    batchId         String?
     cargoId         String?          @map("cargo_id")
     isEmpty         Boolean
     stationId       String?          @map("station_id")
@@ -121,10 +122,11 @@ model WagonState {
     station         Station?         @relation(fields: [stationId], references: [id])
     trip            Trip             @relation(fields: [tripId], references: [id])
     wagon           Wagon            @relation(fields: [wagonId], references: [id])
+    batch           Batch?           @relation(fields: [batchId], references: [id])
 
     @@index([wagonId])
     @@index([tripId])
-    @@index([stationId])
+    @@index([batchId])
     @@map("Wagon_states")
 }
 
@@ -152,6 +154,30 @@ model WagonOperation {
     @@map("Wagon_operations")
 }
 
+model Batch {
+    id String @id @default(uuid())
+
+    direction BatchDirection
+    type      BatchType
+
+    documentNumber String @map("document_number")
+
+    cargoOwnerId String @map("cargo_owner_id")
+
+    fromStationId String @map("from_station_id")
+    toStationId   String @map("to_station_id")
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    wagonStates WagonState[]
+
+    @@unique([type, documentNumber])
+    @@index([direction])
+    @@index([type])
+    @@map("Batches")
+}
+
 enum OperationCategory {
     ACTIVE
     PASSIVE
@@ -160,4 +186,14 @@ enum OperationCategory {
 enum StationType {
     INTERNAL
     EXTERNAL
+}
+
+enum BatchDirection {
+    INBOUND // входящая
+    OUTBOUND // исходящая
+}
+
+enum BatchType {
+    WAYBILL // по накладной
+    ROUTE_SHEET // по путевому листу
 }

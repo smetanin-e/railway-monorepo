@@ -5,16 +5,19 @@ pnpm --filter frontend dev
 Список задач 
 1. Создание монорепозитория
 2. Создание и подключение базы данных. Установка и настройка Prisma
-3. Создание справочников + CRUD
+3. Создание справочников + CRUD + zod схемы
     wagon-type ✅
     wagon-owner ✅
     wagon ✅
     station ✅
     cargo-owner ✅
-    cargo
+    cargo✅
+
+    OperationType
 
 
-4. Создать zod схемы для валидации данных
+4. 
+    
 
 
 Очень рекомендую дальше:
