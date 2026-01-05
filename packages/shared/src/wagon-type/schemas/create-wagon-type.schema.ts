@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const createWagonTypeSchema = z.object({
-  name: z.string().min(1, 'Название типа вагона обязательно').max(50).trim(),
+  name: z.string().trim().min(1, 'Название типа вагона обязательно').max(50),
   numberPrefix: z
     .string()
     .min(1, 'Префикс обязателен')

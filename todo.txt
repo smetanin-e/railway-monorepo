@@ -1,9 +1,19 @@
 pnpm --filter backend start:dev
 pnpm --filter frontend dev
+
+~/Web/railway-monorepo/packages/shared$ pnpm run build
 Список задач 
 1. Создание монорепозитория
 2. Создание и подключение базы данных. Установка и настройка Prisma
-3. Создание справочника 
+3. Создание справочников + CRUD
+    wagon-type ✅
+    wagon-owner ✅
+    wagon ✅
+    station ✅
+    cargo-owner ✅
+    cargo
+
+
 4. Создать zod схемы для валидации данных
 
 
@@ -14,5 +24,4 @@ pnpm --filter frontend dev
 
 
 остановился на:
-    zod схемы и pipes для вагона и владельца вагона изменить обновление владельца (убрать id из data)
     

@@ -13,7 +13,7 @@ model User {
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
-    @@map("users")
+    @@map("Users")
 }
 
 model Wagon {
@@ -32,6 +32,7 @@ model Wagon {
 
     @@index([typeId])
     @@index([ownerId])
+    @@map("Wagons")
 }
 
 model WagonType {
@@ -53,7 +54,19 @@ model WagonOwner {
     updatedAt DateTime @updatedAt @map("updated_at")
     wagons    Wagon[]
 
-    @@map("Wagon_owner")
+    @@map("Wagon_owners")
+}
+
+model CargoOwner {
+    id   String @id @default(uuid())
+    name String @unique
+
+    // Связь с партиями
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("Cargo_owners")
 }
 
 model Cargo {
@@ -64,6 +77,8 @@ model Cargo {
     createdAt         DateTime     @default(now()) @map("created_at")
     updatedAt         DateTime     @updatedAt @map("updated_at")
     wagonStates       WagonState[]
+
+    @@map("Cargos")
 }
 
 model Station {
@@ -76,6 +91,7 @@ model Station {
     wagonStates WagonState[]
 
     @@index([type])
+    @@map("Stations")
 }
 
 model Trip {
@@ -85,6 +101,8 @@ model Trip {
     createdAt   DateTime     @default(now()) @map("created_at")
     updatedAt   DateTime     @updatedAt @map("updated_at")
     wagonStates WagonState[]
+
+    @@map("Trips")
 }
 
 model WagonState {
@@ -107,7 +125,7 @@ model WagonState {
     @@index([wagonId])
     @@index([tripId])
     @@index([stationId])
-    @@map("Wagon_state")
+    @@map("Wagon_states")
 }
 
 model OperationType {
@@ -117,7 +135,7 @@ model OperationType {
     category        OperationCategory
     wagonOperations WagonOperation[]
 
-    @@map("Operation_type")
+    @@map("Operation_types")
 }
 
 model WagonOperation {
@@ -131,7 +149,7 @@ model WagonOperation {
     type         OperationType @relation(fields: [typeId], references: [id])
     wagonState   WagonState    @relation(fields: [wagonStateId], references: [id])
 
-    @@map("Wagon_operation")
+    @@map("Wagon_operations")
 }
 
 enum OperationCategory {

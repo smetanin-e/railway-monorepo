@@ -3,9 +3,9 @@ import { z } from 'zod';
 export const createWagonSchema = z.object({
   number: z
     .string()
+    .trim()
     .length(8, 'Номер вагона должен быть ровно 8 цифр')
-    .regex(/^\d{8}$/, 'Номер вагона должен содержать только цифры')
-    .trim(),
+    .regex(/^\d{8}$/, 'Номер вагона должен содержать только цифры'),
   typeId: z.uuid({ message: 'Некорректный формат идентификатора (UUID)' }),
 
   ownerId: z.uuid({ message: 'Некорректный формат идентификатора (UUID)' }),
