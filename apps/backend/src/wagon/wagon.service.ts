@@ -50,6 +50,7 @@ export class WagonService {
       const isValidWagonNumber = WagonNumberValidator.validate(
         data.number,
         wagonType.numberPrefix,
+        data.affiliationType,
       );
 
       if (!isValidWagonNumber) {
@@ -59,6 +60,7 @@ export class WagonService {
       return await this.prisma.wagon.create({
         data: {
           number: data.number,
+          affiliationType: data.affiliationType,
           typeId: data.typeId,
           ownerId: data.ownerId,
           barPackage: data.barPackage,

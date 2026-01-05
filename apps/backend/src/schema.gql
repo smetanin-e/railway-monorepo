@@ -60,6 +60,9 @@ input CreateStationInput {
 
 """Данные для создания вагона"""
 input CreateWagonInput {
+  """Принадлежность вагона ("OWN" | "LEASED")"""
+  affiliationType: WagonOwnership!
+
   """Тара с бруса (т)"""
   barPackage: Float!
 
@@ -222,6 +225,9 @@ input UpdateWagonTypeInput {
 
 """Модель вагона"""
 type WagonModel {
+  """Принадлежность вагона ("OWN" | "LEASED")"""
+  affiliationType: WagonOwnership!
+
   """Тара с бруса (т)"""
   barPackage: Float!
 
@@ -261,6 +267,12 @@ type WagonOwnerModel {
 
   """Связь с вагоноами"""
   wagons: [WagonModel!]
+}
+
+"""Принадлежность вагона (внутренний / арендованный)"""
+enum WagonOwnership {
+  LEASED
+  OWN
 }
 
 """Тип вагона"""
