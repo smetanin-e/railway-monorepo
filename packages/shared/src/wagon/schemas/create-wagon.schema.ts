@@ -1,28 +1,26 @@
 import { z } from 'zod';
+import { WagonOwnership } from '../enums/wagon-ownership.enum';
+import { basedWagonSchema } from './base-wagon.schema';
 
-export const createWagonSchema = z.object({
-  number: z
-    .string()
-    .trim()
-    .length(8, 'Номер вагона должен быть ровно 8 цифр')
-    .regex(/^\d{8}$/, 'Номер вагона должен содержать только цифры'),
-  typeId: z.uuid({ message: 'Некорректный формат идентификатора (UUID)' }),
+export const createWagonSchema = z.discriminatedUnion('affiliationType', [
+  basedWagonSchema.extend({
+    affiliationType: z.literal(WagonOwnership.LEASED),
+    number: z
+      .string()
+      .trim()
+      .length(8, 'Номер вагона должен быть ровно 8 цифр')
+      .regex(/^\d{8}$/, 'Номер вагона должен содержать только цифры'),
+  }),
 
-  ownerId: z.uuid({ message: 'Некорректный формат идентификатора (UUID)' }),
-  barPackage: z
-    .number('Тара с бруса должна быть числом')
-    .nonnegative('Тара с бруса не может быть отрицательной')
-    .max(999.999, 'Тара с бруса не может превышать 999.999'),
-
-  capacity: z
-    .number('Грузоподъемность должна быть числом')
-    .nonnegative('Грузоподъемность не может быть отрицательной')
-    .max(999.999, 'Грузоподъемность не может превышать 999.999'),
-
-  volume: z
-    .number('Объем должен быть числом')
-    .nonnegative('Объем не может быть отрицательным')
-    .max(999.999, 'Объем не может превышать 999.999'),
-});
+  basedWagonSchema.extend({
+    affiliationType: z.literal(WagonOwnership.OWN),
+    number: z
+      .string()
+      .trim()
+      .min(3, 'Номер вагона должен иметь минимум 3 цифры')
+      .max(8, 'Номер вагона не может быть длиннее 8 цифр')
+      .regex(/^\d+$/, 'Номер вагона должен содержать только цифры'),
+  }),
+]);
 
 export type CreateWagonInput = z.infer<typeof createWagonSchema>;

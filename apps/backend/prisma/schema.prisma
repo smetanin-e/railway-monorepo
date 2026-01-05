@@ -17,18 +17,19 @@ model User {
 }
 
 model Wagon {
-    id         String       @id @default(uuid())
-    number     String       @unique
-    typeId     String       @map("type_id")
-    ownerId    String       @map("owner_id")
-    barPackage Decimal      @map("bar_package") @db.Decimal(10, 3) //тара с бруса (т)
-    capacity   Decimal      @db.Decimal(10, 3) //Грузоподъемность (т)
-    volume     Decimal      @db.Decimal(10, 3) //Объем (м³)
-    createdAt  DateTime     @default(now()) @map("created_at")
-    updatedAt  DateTime     @updatedAt @map("updated_at")
-    owner      WagonOwner   @relation(fields: [ownerId], references: [id], onDelete: Restrict)
-    type       WagonType    @relation(fields: [typeId], references: [id], onDelete: Restrict)
-    states     WagonState[]
+    id              String         @id @default(uuid())
+    number          String         @unique
+    affiliationType WagonOwnership @map("affiliation_type")
+    typeId          String         @map("type_id")
+    ownerId         String         @map("owner_id")
+    barPackage      Decimal        @map("bar_package") @db.Decimal(10, 3) //тара с бруса (т)
+    capacity        Decimal        @db.Decimal(10, 3) //Грузоподъемность (т)
+    volume          Decimal        @db.Decimal(10, 3) //Объем (м³)
+    createdAt       DateTime       @default(now()) @map("created_at")
+    updatedAt       DateTime       @updatedAt @map("updated_at")
+    owner           WagonOwner     @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+    type            WagonType      @relation(fields: [typeId], references: [id], onDelete: Restrict)
+    states          WagonState[]
 
     @@index([typeId])
     @@index([ownerId])
@@ -186,6 +187,11 @@ enum OperationCategory {
 enum StationType {
     INTERNAL
     EXTERNAL
+}
+
+enum WagonOwnership {
+    OWN // принадлежит вашему предприятию (Имеет номера разных форматов)
+    LEASED // арендованный (имеет 8-ми значный номер и зависит от типа вагона)
 }
 
 enum BatchDirection {

@@ -11,7 +11,7 @@ export const createStationSchema = z.discriminatedUnion('type', [
 
   // Схема для EXTERNAL станций
   z.object({
-    name: z.string().min(1, 'Название станции обязательно').max(255).trim(),
+    name: z.string().trim().min(1, 'Название станции обязательно').max(255),
     type: z.literal(StationType.EXTERNAL),
     code: z
       .string()
