@@ -11,6 +11,7 @@ import { WagonTypeModule } from './wagon-type/wagon-type.module';
 import { WagonOwnerModule } from './wagon-owner/wagon-owner.module';
 import { StationModule } from './station/station.module';
 import { CargoOwnerModule } from './cargo-owner/cargo-owner.module';
+import { CargoModule } from './cargo/cargo.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CargoOwnerModule } from './cargo-owner/cargo-owner.module';
     WagonOwnerModule,
     StationModule,
     CargoOwnerModule,
+    CargoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

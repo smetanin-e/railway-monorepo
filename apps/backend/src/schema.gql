@@ -2,6 +2,22 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""Груз"""
+type CargoModel {
+  createdAt: DateTime!
+  id: ID!
+
+  """Код груза ЕГСНГ (международный)"""
+  internationalCode: String!
+
+  """Название груза"""
+  name: String!
+
+  """Код груза ГНГ(внутренний)"""
+  nationalCode: String!
+  updatedAt: DateTime!
+}
+
 """Владелец груза"""
 type CargoOwnerModel {
   createdAt: DateTime!
@@ -10,6 +26,18 @@ type CargoOwnerModel {
   """Название владельца груза"""
   name: String!
   updatedAt: DateTime!
+}
+
+"""Данные для создания груза"""
+input CreateCargoInput {
+  """Код груза ЕГСНГ международный (уникальный)"""
+  internationalCode: String!
+
+  """Название груза (уникальное)"""
+  name: String!
+
+  """Код груза ГНГ внутренний (уникальный)"""
+  nationalCode: String!
 }
 
 """Данные для создания владельца груза"""
@@ -73,6 +101,9 @@ scalar DateTime
 
 type Mutation {
   """Создать новый тип вагона"""
+  createCargo(data: CreateCargoInput!): CargoModel!
+
+  """Создать новый тип вагона"""
   createCargoOwner(data: CreateCargoOwnerInput!): CargoOwnerModel!
 
   """Добавить новую станцию"""
@@ -86,6 +117,9 @@ type Mutation {
 
   """Создать новый тип вагона"""
   createWagonType(data: CreateWagonTypeInput!): WagonTypeModel!
+
+  """Удалить груз по ID"""
+  removeCargo(id: ID!): Boolean!
 
   """Удалить собственника груза по ID"""
   removeCargoOwner(id: ID!): Boolean!
@@ -107,6 +141,9 @@ type Mutation {
 }
 
 type Query {
+  """Получить груз по ID"""
+  findOneCargo(id: ID!): CargoModel!
+
   """Получить собственника груза по ID"""
   findOneCargoOwner(id: ID!): CargoOwnerModel!
 
@@ -124,6 +161,9 @@ type Query {
 
   """Получить список всех собственников груза"""
   getCargoOwners: [CargoOwnerModel!]!
+
+  """Получить список всех грузов"""
+  getCargos: [CargoModel!]!
 
   """Получить список всех станций"""
   getStations: [StationModel!]!

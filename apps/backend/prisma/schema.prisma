@@ -72,8 +72,8 @@ model CargoOwner {
 model Cargo {
     id                String       @id @default(uuid())
     name              String       @unique
-    nationalCode      String       @unique @map("national_code")
-    internationalCode String       @unique @map("international_code")
+    nationalCode      String       @unique @map("national_code") // ГНГ
+    internationalCode String       @unique @map("international_code") // ЕГСНГ
     createdAt         DateTime     @default(now()) @map("created_at")
     updatedAt         DateTime     @updatedAt @map("updated_at")
     wagonStates       WagonState[]
