@@ -64,6 +64,7 @@ model CargoOwner {
     name String @unique
 
     // Связь с партиями
+    batches Batch[]
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
@@ -72,13 +73,14 @@ model CargoOwner {
 }
 
 model Cargo {
-    id                String       @id @default(uuid())
-    name              String       @unique
-    nationalCode      String       @unique @map("national_code") // ГНГ
-    internationalCode String       @unique @map("international_code") // ЕГСНГ
-    createdAt         DateTime     @default(now()) @map("created_at")
-    updatedAt         DateTime     @updatedAt @map("updated_at")
-    wagonStates       WagonState[]
+    id                String   @id @default(uuid())
+    name              String   @unique
+    nationalCode      String   @unique @map("national_code") // ГНГ
+    internationalCode String   @unique @map("international_code") // ЕГСНГ
+    createdAt         DateTime @default(now()) @map("created_at")
+    updatedAt         DateTime @updatedAt @map("updated_at")
+
+    wagonStates WagonState[]
 
     @@map("Cargos")
 }
@@ -91,6 +93,12 @@ model Station {
     createdAt   DateTime     @default(now()) @map("created_at")
     updatedAt   DateTime     @updatedAt @map("updated_at")
     wagonStates WagonState[]
+
+    // партии, где станция — ОТКУДА
+    fromBatches Batch[] @relation("FromStation")
+
+    // партии, где станция — КУДА
+    toBatches Batch[] @relation("ToStation")
 
     @@index([type])
     @@map("Stations")
@@ -120,23 +128,31 @@ model Trip {
 }
 
 model WagonState {
-    id              String           @id @default(uuid())
-    wagonId         String           @map("wagon_id")
-    tripId          String           @map("trip_id")
-    batchId         String?
-    cargoId         String?          @map("cargo_id")
-    isEmpty         Boolean
-    stationId       String?          @map("station_id")
-    startedAt       DateTime         @map("started_at")
-    endedAt         DateTime?        @map("ended_at")
-    createdAt       DateTime         @default(now()) @map("created_at")
-    updatedAt       DateTime         @updatedAt @map("updated_at")
+    id String @id @default(uuid())
+
+    wagonId String @map("wagon_id")
+    wagon   Wagon  @relation(fields: [wagonId], references: [id])
+
+    tripId String @map("trip_id")
+    trip   Trip   @relation(fields: [tripId], references: [id])
+
+    batchId String
+    batch   Batch  @relation(fields: [batchId], references: [id])
+
+    cargoId String @map("cargo_id")
+    cargo   Cargo  @relation(fields: [cargoId], references: [id])
+
+    stationId String  @map("station_id")
+    station   Station @relation(fields: [stationId], references: [id])
+
+    isEmpty   Boolean
+    startedAt DateTime  @map("started_at")
+    endedAt   DateTime? @map("ended_at")
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
     wagonOperations WagonOperation[]
-    cargo           Cargo?           @relation(fields: [cargoId], references: [id])
-    station         Station?         @relation(fields: [stationId], references: [id])
-    trip            Trip             @relation(fields: [tripId], references: [id])
-    wagon           Wagon            @relation(fields: [wagonId], references: [id])
-    batch           Batch?           @relation(fields: [batchId], references: [id])
 
     @@index([wagonId])
     @@index([tripId])
@@ -155,7 +171,6 @@ model OperationType {
 }
 
 model WagonOperation {
-    //! Привязать снанцию к операции
     id           String        @id @default(uuid())
     wagonStateId String
     typeId       String
@@ -179,10 +194,14 @@ model Batch {
 
     startedAt DateTime @map("started_at")
 
-    cargoOwnerId String @map("cargo_owner_id") //добавить связь с сущностью
+    cargoOwnerId String      @map("cargo_owner_id")
+    cargoOwner   CargoOwner? @relation(fields: [cargoOwnerId], references: [id])
 
-    fromStationId String @map("from_station_id") //добавить связь с сущностью
-    toStationId   String @map("to_station_id") //добавить связь с сущностью
+    fromStationId String  @map("from_station_id")
+    fromStation   Station @relation("FromStation", fields: [fromStationId], references: [id])
+
+    toStationId String  @map("to_station_id")
+    toStation   Station @relation("ToStation", fields: [toStationId], references: [id])
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
@@ -218,5 +237,5 @@ enum BatchDirection {
 
 enum BatchType {
     WAYBILL // по накладной
-    ROUTE_SHEET // по путевому листу
+    ROUTE_SHEET // по вагонному листу
 }

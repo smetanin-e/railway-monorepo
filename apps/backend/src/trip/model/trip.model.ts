@@ -14,6 +14,6 @@ export class TripModel extends BaseModel {
   @Field(() => WagonModel, { description: 'Связь с вагоном' })
   wagon!: WagonModel;
 
-  @Field(() => BatchModel)
+  @Field(() => BatchModel, { description: 'Связь с партией' })
   batch!: BatchModel;
 }

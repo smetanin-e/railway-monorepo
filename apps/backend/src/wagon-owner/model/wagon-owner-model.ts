@@ -11,5 +11,5 @@ export class WagonOwnerModel extends BaseModel {
     nullable: true,
     description: 'Связь с вагоноами',
   })
-  wagons?: [WagonModel] | null;
+  wagons?: WagonModel[] | null;
 }
