@@ -30,6 +30,7 @@ model Wagon {
     owner           WagonOwner     @relation(fields: [ownerId], references: [id], onDelete: Restrict)
     type            WagonType      @relation(fields: [typeId], references: [id], onDelete: Restrict)
     states          WagonState[]
+    trips           Trip[]
 
     @@index([typeId])
     @@index([ownerId])
@@ -96,13 +97,25 @@ model Station {
 }
 
 model Trip {
-    id          String       @id @default(uuid())
-    startedAt   DateTime
-    finishedAt  DateTime?
-    createdAt   DateTime     @default(now()) @map("created_at")
-    updatedAt   DateTime     @updatedAt @map("updated_at")
+    id String @id @default(uuid())
+
+    wagonId String @map("wagon_id")
+    wagon   Wagon  @relation(fields: [wagonId], references: [id])
+
+    batchId String @map("batch_id")
+    batch   Batch  @relation(fields: [batchId], references: [id])
+
+    startedAt  DateTime
+    finishedAt DateTime?
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
     wagonStates WagonState[]
 
+    @@unique([batchId, wagonId])
+    @@index([wagonId])
+    @@index([batchId])
     @@map("Trips")
 }
 
@@ -142,6 +155,7 @@ model OperationType {
 }
 
 model WagonOperation {
+    //! Привязать снанцию к операции
     id           String        @id @default(uuid())
     wagonStateId String
     typeId       String
@@ -163,15 +177,18 @@ model Batch {
 
     documentNumber String @map("document_number")
 
-    cargoOwnerId String @map("cargo_owner_id")
+    startedAt DateTime @map("started_at")
 
-    fromStationId String @map("from_station_id")
-    toStationId   String @map("to_station_id")
+    cargoOwnerId String @map("cargo_owner_id") //добавить связь с сущностью
+
+    fromStationId String @map("from_station_id") //добавить связь с сущностью
+    toStationId   String @map("to_station_id") //добавить связь с сущностью
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
     wagonStates WagonState[]
+    trips       Trip[]
 
     @@unique([type, documentNumber])
     @@index([direction])

@@ -12,6 +12,8 @@ import { WagonOwnerModule } from './wagon-owner/wagon-owner.module';
 import { StationModule } from './station/station.module';
 import { CargoOwnerModule } from './cargo-owner/cargo-owner.module';
 import { CargoModule } from './cargo/cargo.module';
+import { TripModule } from './trip/trip.module';
+import { BatchModule } from './batch/batch.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { CargoModule } from './cargo/cargo.module';
     StationModule,
     CargoOwnerModule,
     CargoModule,
+    TripModule,
+    BatchModule,
   ],
   controllers: [AppController],
   providers: [AppService],

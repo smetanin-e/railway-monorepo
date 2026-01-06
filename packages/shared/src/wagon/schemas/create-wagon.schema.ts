@@ -3,6 +3,7 @@ import { WagonOwnership } from '../enums/wagon-ownership.enum';
 import { basedWagonSchema } from './base-wagon.schema';
 
 export const createWagonSchema = z.discriminatedUnion('affiliationType', [
+  // Схема для внутреннего вагона
   basedWagonSchema.extend({
     affiliationType: z.literal(WagonOwnership.LEASED),
     number: z
@@ -12,6 +13,7 @@ export const createWagonSchema = z.discriminatedUnion('affiliationType', [
       .regex(/^\d{8}$/, 'Номер вагона должен содержать только цифры'),
   }),
 
+  // Схема для внешнего(арендованного) вагона
   basedWagonSchema.extend({
     affiliationType: z.literal(WagonOwnership.OWN),
     number: z
