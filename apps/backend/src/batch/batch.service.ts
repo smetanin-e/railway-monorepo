@@ -1,7 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateBatchInput } from './inputs/create-batch.input';
 import { Batch } from '@prisma/client';
+import { validateBatchCreation } from './rules/batch.rules';
 
 @Injectable()
 export class BatchService {
@@ -9,18 +10,13 @@ export class BatchService {
 
   async create(input: CreateBatchInput): Promise<Batch> {
     return this.prisma.$transaction(async (tx) => {
-      const activeStates = await tx.wagonState.findMany({
-        where: {
-          wagonId: { in: input.wagonIds },
-          endedAt: null,
-        },
+      await validateBatchCreation(tx, {
+        fromStationId: input.fromStationId,
+        toStationId: input.toStationId,
+        wagonIds: input.wagonIds,
+        batchType: input.type,
+        batchDirection: input.direction,
       });
-
-      if (activeStates.length > 0) {
-        throw new ConflictException(
-          'Некоторые вагоны уже находятся в активном состоянии',
-        );
-      }
 
       const batch = await tx.batch.create({
         data: {
