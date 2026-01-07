@@ -164,7 +164,7 @@ model WagonState {
 
 model OperationType {
     id              String            @id @default(uuid())
-    name            String
+    name            String            @unique
     normative       Decimal           @db.Decimal(10, 3)
     category        OperationCategory
     wagonOperations WagonOperation[]

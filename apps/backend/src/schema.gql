@@ -127,6 +127,20 @@ input CreateCargoOwnerInput {
   name: String!
 }
 
+"""Данные для создания типа операции"""
+input CreateOperationTypeInput {
+  """
+  Категория операции "ACTIVE" | "PASSIVE"
+  """
+  category: OperationCategory!
+
+  """Название операции"""
+  name: String!
+
+  """Норма"""
+  normative: Float!
+}
+
 """Данные для создания станции"""
 input CreateStationInput {
   """Код снанции (только для "EXTERNAL")"""
@@ -193,6 +207,9 @@ type Mutation {
   """Создать новый тип вагона"""
   createCargoOwner(data: CreateCargoOwnerInput!): CargoOwnerModel!
 
+  """Создать новый тип операции"""
+  createOperationType(data: CreateOperationTypeInput!): OperationTypeModel!
+
   """Добавить новую станцию"""
   createStation(data: CreateStationInput!): StationModel!
 
@@ -220,11 +237,39 @@ type Mutation {
   """Удалить тип вагона по его ID"""
   removeWagonType(id: ID!): Boolean!
 
+  """Удалить тип операции по ID"""
+  removeperationType(id: ID!): Boolean!
+
   """Обновить информацию о вагоне"""
   updateWagon(data: UpdateWagonInput!, id: ID!): WagonModel!
 
   """Обновить тип вагона по ID"""
   updateWagonType(data: UpdateWagonTypeInput!, id: ID!): WagonTypeModel!
+}
+
+"""
+Категория операции "ACTIVE" | "PASSIVE"
+"""
+enum OperationCategory {
+  ACTIVE
+  PASSIVE
+}
+
+"""Тип операции"""
+type OperationTypeModel {
+  """
+  Категория операции "ACTIVE" | "PASSIVE"
+  """
+  category: OperationCategory!
+  createdAt: DateTime!
+  id: ID!
+
+  """Название операции"""
+  name: String!
+
+  """Норма"""
+  normative: Float!
+  updatedAt: DateTime!
 }
 
 type Query {
@@ -233,6 +278,9 @@ type Query {
 
   """Получить собственника груза по ID"""
   findOneCargoOwner(id: ID!): CargoOwnerModel!
+
+  """Получить тип операции по ID"""
+  findOneOperationType(id: ID!): OperationTypeModel!
 
   """Получить одну станцию по ID"""
   findOneStation(id: ID!): StationModel!
@@ -258,8 +306,8 @@ type Query {
   """Получить список всех собственников вагонов"""
   getWagonOwners: [WagonOwnerModel!]!
 
-  """Получить список всех типов вагонов"""
-  getWagonTypes: [WagonTypeModel!]!
+  """Получить список всех типов операций"""
+  getWagonTypes: [OperationTypeModel!]!
 
   """Получить список всех вагонов"""
   getWagons: [WagonModel!]!

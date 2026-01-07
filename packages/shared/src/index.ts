@@ -8,6 +8,9 @@ export * from './station/enums/station-type.enum';
 export * from './wagon/enums/wagon-ownership.enum';
 export * from './batch/enums/batch.enum';
 
+export * from './operation-type/enums/operation-category.enum';
+export * from './operation-type/schemas/create-operation-type.schema';
+
 export * from './cargo/schemas/create-cargo.schema';
 export * from './cargo-owner/schemas/create-cargo-owner.schema';
 
