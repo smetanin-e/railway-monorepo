@@ -2,6 +2,57 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""Принадлежность партии (входящая / исходящая)"""
+enum BatchDirection {
+  INBOUND
+  OUTBOUND
+}
+
+"""Партия вагонов"""
+type BatchModel {
+  """Связь с грузом"""
+  cargo: CargoModel
+
+  """Связь с владельцем груза"""
+  cargoOwner: CargoOwnerModel
+  createdAt: DateTime!
+
+  """
+  Принадлежность партии (входящая / исходящая)  ("INBOUND" | "OUTBOUND") 
+  """
+  direction: BatchDirection!
+
+  """Номер партии (он же номер накладной)"""
+  documentNumber: String!
+
+  """Связь со станцией выхода"""
+  fromStation: StationModel!
+  id: ID!
+
+  """Время и дата прибытия партии"""
+  startedAt: DateTime!
+
+  """Связь со станцией входа"""
+  toStation: StationModel!
+
+  """Связь с рейсами"""
+  trips: [TripModel!]!
+
+  """
+  Тип партии партии (по накладной / по вагонному листу)  ("WAYBILL" | "ROUTE_SHEET") 
+  """
+  type: BatchType!
+  updatedAt: DateTime!
+}
+
+"""
+Тип партии (По накладной / по вагонному листу (внутреннее перемещение))
+"""
+enum BatchType {
+  ROUTE_SHEET
+  WAYBILL
+}
+
 """Груз"""
 type CargoModel {
   createdAt: DateTime!
@@ -26,6 +77,36 @@ type CargoOwnerModel {
   """Название владельца груза"""
   name: String!
   updatedAt: DateTime!
+}
+
+"""Данные для создания партии"""
+input CreateBatchInput {
+  """ID груза"""
+  cargoId: String!
+
+  """ID владельца груза"""
+  cargoOwnerId: String!
+
+  """Принадлежность партии ("INBOUND" | "OUTBOUND")"""
+  direction: BatchDirection!
+
+  """Номер партии (накладная или вагонный лист) (уникальное)"""
+  documentNumber: String!
+
+  """ID станции выхода партии"""
+  fromStationId: String!
+
+  """Время и дата прибытия партии"""
+  startedAt: DateTime!
+
+  """ID станции входа партии"""
+  toStationId: String!
+
+  """Тип партии партии ("WAYBILL" | "ROUTE_SHEET")"""
+  type: BatchType!
+
+  """ID вагонов внутри партии"""
+  wagonIds: [String!]!
 }
 
 """Данные для создания груза"""
@@ -103,6 +184,9 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Mutation {
+  """Добавить партию"""
+  createBatch(data: CreateBatchInput!): BatchModel!
+
   """Создать новый тип вагона"""
   createCargo(data: CreateCargoInput!): CargoModel!
 
@@ -110,7 +194,7 @@ type Mutation {
   createCargoOwner(data: CreateCargoOwnerInput!): CargoOwnerModel!
 
   """Добавить новую станцию"""
-  createStation(create: CreateStationInput!): StationModel!
+  createStation(data: CreateStationInput!): StationModel!
 
   """Добавить новый вагон"""
   createWagon(data: CreateWagonInput!): WagonModel!
@@ -200,6 +284,20 @@ type StationModel {
 enum StationType {
   EXTERNAL
   INTERNAL
+}
+
+"""Рейс вагона"""
+type TripModel {
+  """Связь с партией"""
+  batch: BatchModel!
+  createdAt: DateTime!
+  finishedAt: DateTime
+  id: ID!
+  startedAt: DateTime!
+  updatedAt: DateTime!
+
+  """Связь с вагоном"""
+  wagon: WagonModel!
 }
 
 """Данные для обновления информации о вагоне"""

@@ -5,6 +5,7 @@ import { BatchType } from '../enums/batch-type.enum';
 import { CargoOwnerModel } from 'src/cargo-owner/model/cargo-owner.model';
 import { StationModel } from 'src/station/model/station.model';
 import { TripModel } from 'src/trip/model/trip.model';
+import { CargoModel } from 'src/cargo/model/cargo.model';
 
 @ObjectType({ description: 'Партия вагонов' })
 export class BatchModel extends BaseModel {
@@ -23,8 +24,16 @@ export class BatchModel extends BaseModel {
   })
   type!: BatchType;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: 'Время и дата прибытия партии',
+  })
   startedAt!: Date;
+
+  @Field(() => CargoModel, {
+    nullable: true,
+    description: 'Связь с грузом',
+  })
+  cargo?: CargoModel | null;
 
   @Field(() => CargoOwnerModel, {
     nullable: true,

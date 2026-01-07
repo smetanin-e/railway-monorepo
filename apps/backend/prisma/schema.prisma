@@ -80,6 +80,7 @@ model Cargo {
     createdAt         DateTime @default(now()) @map("created_at")
     updatedAt         DateTime @updatedAt @map("updated_at")
 
+    batches     Batch[]
     wagonStates WagonState[]
 
     @@map("Cargos")
@@ -139,13 +140,12 @@ model WagonState {
     batchId String
     batch   Batch  @relation(fields: [batchId], references: [id])
 
-    cargoId String @map("cargo_id")
-    cargo   Cargo  @relation(fields: [cargoId], references: [id])
+    cargoId String? @map("cargo_id")
+    cargo   Cargo?  @relation(fields: [cargoId], references: [id])
 
     stationId String  @map("station_id")
     station   Station @relation(fields: [stationId], references: [id])
 
-    isEmpty   Boolean
     startedAt DateTime  @map("started_at")
     endedAt   DateTime? @map("ended_at")
 
@@ -157,6 +157,8 @@ model WagonState {
     @@index([wagonId])
     @@index([tripId])
     @@index([batchId])
+    @@index([stationId])
+    @@index([endedAt])
     @@map("Wagon_states")
 }
 
@@ -196,6 +198,9 @@ model Batch {
 
     cargoOwnerId String      @map("cargo_owner_id")
     cargoOwner   CargoOwner? @relation(fields: [cargoOwnerId], references: [id])
+
+    cargoId String? @map("cargo_id")
+    cargo   Cargo?  @relation(fields: [cargoId], references: [id])
 
     fromStationId String  @map("from_station_id")
     fromStation   Station @relation("FromStation", fields: [fromStationId], references: [id])

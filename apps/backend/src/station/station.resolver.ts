@@ -28,7 +28,7 @@ export class StationResolver {
     description: 'Добавить новую станцию',
   })
   @UsePipes(new CreateStationPipe())
-  createStation(@Args('create') input: CreateStationInput) {
+  createStation(@Args('data') input: CreateStationInput) {
     return this.stationService.create(input);
   }
 

@@ -1,4 +1,62 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateBatchInput } from './inputs/create-batch.input';
+import { Batch } from '@prisma/client';
 
 @Injectable()
-export class BatchService {}
+export class BatchService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(input: CreateBatchInput): Promise<Batch> {
+    return this.prisma.$transaction(async (tx) => {
+      const activeStates = await tx.wagonState.findMany({
+        where: {
+          wagonId: { in: input.wagonIds },
+          endedAt: null,
+        },
+      });
+
+      if (activeStates.length > 0) {
+        throw new ConflictException(
+          'Некоторые вагоны уже находятся в активном состоянии',
+        );
+      }
+
+      const batch = await tx.batch.create({
+        data: {
+          documentNumber: input.documentNumber,
+          direction: input.direction,
+          type: input.type,
+          startedAt: input.startedAt,
+          fromStationId: input.fromStationId,
+          toStationId: input.toStationId,
+          cargoOwnerId: input.cargoOwnerId,
+          cargoId: input.cargoId,
+        },
+      });
+
+      for (const wagonId of input.wagonIds) {
+        const trip = await tx.trip.create({
+          data: {
+            batchId: batch.id,
+            wagonId,
+            startedAt: batch.startedAt,
+          },
+        });
+
+        await tx.wagonState.create({
+          data: {
+            wagonId,
+            batchId: batch.id,
+            stationId: batch.fromStationId,
+            tripId: trip.id,
+            startedAt: batch.startedAt,
+            cargoId: batch.cargoId,
+          },
+        });
+      }
+
+      return batch;
+    });
+  }
+}
