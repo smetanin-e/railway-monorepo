@@ -114,8 +114,8 @@ model Trip {
     batchId String @map("batch_id")
     batch   Batch  @relation(fields: [batchId], references: [id])
 
-    startedAt  DateTime
-    finishedAt DateTime?
+    startedAt  DateTime // Равен дате и времени партии входа
+    finishedAt DateTime? // Равен дате и времени партии
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
@@ -137,8 +137,8 @@ model WagonState {
     tripId String @map("trip_id")
     trip   Trip   @relation(fields: [tripId], references: [id])
 
-    batchId String
-    batch   Batch  @relation(fields: [batchId], references: [id])
+    // batchId String
+    // batch   Batch  @relation(fields: [batchId], references: [id])
 
     cargoId String? @map("cargo_id")
     cargo   Cargo?  @relation(fields: [cargoId], references: [id])
@@ -156,7 +156,7 @@ model WagonState {
 
     @@index([wagonId])
     @@index([tripId])
-    @@index([batchId])
+    //@@index([batchId])
     @@index([stationId])
     @@index([endedAt])
     @@map("Wagon_states")
@@ -211,8 +211,8 @@ model Batch {
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
-    wagonStates WagonState[]
-    trips       Trip[]
+    //wagonStates WagonState[]
+    trips Trip[]
 
     @@unique([type, documentNumber])
     @@index([direction])

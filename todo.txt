@@ -12,8 +12,7 @@ pnpm --filter frontend dev
     station ✅
     cargo-owner ✅
     cargo✅
-
-    OperationType
+    OperationType✅
 
 В WagonState добавить состояние вагона (годен под погрузку, требует ремонта)
 
@@ -51,3 +50,4 @@ pnpm --filter frontend dev
     разобраться со схемой создания партии при отсутствии накладной
 
 Уточнить:
+        При внутреннем перемещении у нас станции входа и выхода ВНУТРЕННИЕ?

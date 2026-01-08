@@ -6,7 +6,7 @@ export const creaBatchSchema = z.object({
     .string()
     .trim()
     .min(1, 'Номер документа обязателен')
-    .max(50, 'Номер документа слишком длинный'),
+    .max(12, 'Номер документа слишком длинный'),
 
   direction: z.enum(BatchDirection),
 
