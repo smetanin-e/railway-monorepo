@@ -117,6 +117,8 @@ model Trip {
     startedAt  DateTime // Равен дате и времени партии входа
     finishedAt DateTime? // Равен дате и времени партии
 
+    status TripStatus @default(ACTIVE)
+
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -167,6 +169,7 @@ model OperationType {
     name            String            @unique
     normative       Decimal           @db.Decimal(10, 3)
     category        OperationCategory
+    role            OperationRole
     wagonOperations WagonOperation[]
 
     @@map("Operation_types")
@@ -225,6 +228,11 @@ enum OperationCategory {
     PASSIVE
 }
 
+enum OperationRole {
+    PRIMARY
+    SECONDARY
+}
+
 enum StationType {
     INTERNAL
     EXTERNAL
@@ -243,4 +251,9 @@ enum BatchDirection {
 enum BatchType {
     WAYBILL // по накладной
     ROUTE_SHEET // по вагонному листу
+}
+
+enum TripStatus {
+    ACTIVE // Активен
+    COMPLETED // Завершен
 }

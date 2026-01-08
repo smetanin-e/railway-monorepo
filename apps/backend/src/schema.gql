@@ -139,6 +139,11 @@ input CreateOperationTypeInput {
 
   """Норма"""
   normative: Float!
+
+  """
+  Роль операции "PRIMARY" | "SECONDARY"
+  """
+  role: OperationRole!
 }
 
 """Данные для создания станции"""
@@ -255,6 +260,14 @@ enum OperationCategory {
   PASSIVE
 }
 
+"""
+Роль операции "PRIMARY" | "SECONDARY"
+"""
+enum OperationRole {
+  PRIMARY
+  SECONDARY
+}
+
 """Тип операции"""
 type OperationTypeModel {
   """
@@ -269,6 +282,11 @@ type OperationTypeModel {
 
   """Норма"""
   normative: Float!
+
+  """
+  Роль операции "PRIMARY" | "SECONDARY"
+  """
+  role: OperationRole!
   updatedAt: DateTime!
 }
 

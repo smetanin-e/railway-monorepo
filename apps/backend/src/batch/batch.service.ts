@@ -43,7 +43,7 @@ export class BatchService {
         await tx.wagonState.create({
           data: {
             wagonId,
-            batchId: trip.batchId,
+            // batchId: trip.batchId,
             stationId: batch.fromStationId,
             tripId: trip.id,
             startedAt: batch.startedAt,

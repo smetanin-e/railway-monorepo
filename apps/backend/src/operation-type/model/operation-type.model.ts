@@ -1,6 +1,7 @@
 import { Field, Float, ObjectType } from '@nestjs/graphql';
 import { BaseModel } from 'src/common/base.model';
 import { OperationCategory } from '../enums/operation-category.enum';
+import { OperationRole } from '../enums/operation-role.enum';
 
 @ObjectType({ description: 'Тип операции' })
 export class OperationTypeModel extends BaseModel {
@@ -14,6 +15,11 @@ export class OperationTypeModel extends BaseModel {
     description: 'Категория операции "ACTIVE" | "PASSIVE"',
   })
   category!: OperationCategory;
+
+  @Field(() => OperationRole, {
+    description: 'Роль операции "PRIMARY" | "SECONDARY"',
+  })
+  role!: OperationRole;
 
   // Связь с операциями
   //wagonOperations
