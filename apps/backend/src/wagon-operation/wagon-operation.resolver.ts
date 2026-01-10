@@ -1,7 +1,8 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { WagonOperationService } from './wagon-operation.service';
 import { WagonOperationModel } from './model/wagon-operation.model';
-import { CreateWagonOperationInput } from './inputs/wagon-operation.input';
+import { CreateWagonOperationInput } from './inputs/create-wagon-operation.input';
+import { CreateWagonOperationPipe } from './pipes/create-wagon-operation.pipe';
 
 @Resolver()
 export class WagonOperationResolver {
@@ -10,7 +11,10 @@ export class WagonOperationResolver {
   @Mutation(() => WagonOperationModel, {
     description: 'Создать новый тип вагона',
   })
-  createWagonOperation(@Args('data') input: CreateWagonOperationInput) {
+  createWagonOperation(
+    @Args('data', new CreateWagonOperationPipe())
+    input: CreateWagonOperationInput,
+  ) {
     return this.wagonOperationService.create(input);
   }
 }

@@ -1,13 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateWagonOperationInput } from './inputs/wagon-operation.input';
-import {
-  OperationCategory,
-  OperationCode,
-  OperationConcurrency,
-  OperationType,
-  WagonState,
-} from '@prisma/client';
+import { CreateWagonOperationInput } from './inputs/create-wagon-operation.input';
 
 @Injectable()
 export class WagonOperationService {
@@ -60,11 +53,12 @@ export class WagonOperationService {
       });
 
       // 5️⃣ Проверяем: меняет ли операция состояние
+      //TODO Добавить вес груза позже.
       const changesState =
-        operationType.code &&
-        operationType.concurrency === OperationConcurrency.EXCLUSIVE;
+        currentState.cargoId === input.cargoId &&
+        currentState.stationId === input.stationId;
 
-      if (!changesState) {
+      if (changesState) {
         return operation;
       }
 

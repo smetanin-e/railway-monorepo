@@ -13,6 +13,8 @@ export * from './operation-type/enums/operation-concurrency.enum';
 export * from './operation-type/enums/operation-code.enum';
 export * from './operation-type/schemas/create-operation-type.schema';
 
+export * from './wagon-operation/schemas/create-wagon-operation.schema';
+
 export * from './cargo/schemas/create-cargo.schema';
 export * from './cargo-owner/schemas/create-cargo-owner.schema';
 

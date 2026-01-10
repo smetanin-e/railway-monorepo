@@ -139,9 +139,6 @@ model WagonState {
     tripId String @map("trip_id")
     trip   Trip   @relation(fields: [tripId], references: [id])
 
-    // batchId String
-    // batch   Batch  @relation(fields: [batchId], references: [id])
-
     cargoId String? @map("cargo_id")
     cargo   Cargo?  @relation(fields: [cargoId], references: [id])
 
@@ -160,7 +157,6 @@ model WagonState {
 
     @@index([wagonId])
     @@index([tripId])
-    //@@index([batchId])
     @@index([stationId])
     @@index([endedAt])
     @@map("Wagon_states")
@@ -172,7 +168,6 @@ model OperationType {
     normative       Decimal              @db.Decimal(10, 3)
     category        OperationCategory
     concurrency     OperationConcurrency
-    code            OperationCode?
     wagonOperations WagonOperation[]
 
     @@map("Operation_types")
@@ -238,11 +233,6 @@ enum OperationCategory {
 enum OperationConcurrency {
     EXCLUSIVE // блокирует другие
     PARALLEL // допускает параллельность
-}
-
-enum OperationCode {
-    LOAD
-    UNLOAD
 }
 
 enum StationType {

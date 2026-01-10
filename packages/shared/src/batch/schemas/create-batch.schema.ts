@@ -14,15 +14,14 @@ export const creaBatchSchema = z.object({
 
   startedAt: z.coerce.date({ message: 'Некорректная дата начала партии' }),
 
-  fromStationId: z.uuid('Некорректный идентификатор станции отправления'),
+  fromStationId: z.uuid({ message: 'Некорректный идентификатор станции отправления' }),
 
-  toStationId: z.uuid('Некорректный идентификатор станции назначения'),
+  toStationId: z.uuid({ message: 'Некорректный идентификатор станции назначения' }),
 
-  cargoOwnerId: z.uuid('Некорректный идентификатор владельца груза'),
+  cargoOwnerId: z.uuid({ message: 'Некорректный идентификатор владельца груза' }),
 
-  cargoId: z.uuid('Некорректный идентификатор груза'),
-
-  wagonIds: z.array(z.uuid()).min(1, 'Необходимо указать хотя бы один вагон'),
+  cargoId: z.uuid({ message: 'Некорректный идентификатор груза' }),
+  wagonIds: z.array(z.uuid()).min(1, { message: 'Необходимо указать хотя бы один вагон' }),
 });
 
 export type CreateBatchInput = z.infer<typeof creaBatchSchema>;

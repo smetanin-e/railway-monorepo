@@ -138,11 +138,6 @@ input CreateOperationTypeInput {
   category: OperationCategory!
 
   """
-  Код операции "LOAD" | "UNLOAD" (ОПЦИОНАЛЬНО)"
-  """
-  code: OperationCode
-
-  """
   Конкурентность выполнения операций "EXCLUSIVE" | "PARALLEL""
   """
   concurrency: OperationConcurrency!
@@ -293,14 +288,6 @@ enum OperationCategory {
 }
 
 """
-Код операции "LOAD" | "UNLOAD"
-"""
-enum OperationCode {
-  LOAD
-  UNLOAD
-}
-
-"""
 Конкурентность выполнения операций "EXCLUSIVE" | "PARALLEL"
 """
 enum OperationConcurrency {
@@ -314,11 +301,6 @@ type OperationTypeModel {
   Категория операции "ACTIVE" | "PASSIVE"
   """
   category: OperationCategory!
-
-  """
-  Код операции "LOAD" | "UNLOAD" (ОПЦИОНАЛЬНО)""
-  """
-  code: OperationCode
 
   """
   Конкурентность выполнения операций "EXCLUSIVE" | "PARALLEL"
