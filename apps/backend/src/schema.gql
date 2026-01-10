@@ -348,6 +348,9 @@ type Query {
   """Получить одну станцию по ID"""
   findOneStation(id: ID!): StationModel!
 
+  """Получить рейс по ID"""
+  findOneTrip(id: ID!): TripModel!
+
   """Получить один вагон по ID"""
   findOneWagon(id: ID!): WagonModel!
 
@@ -420,7 +423,7 @@ type TripModel {
   wagon: WagonModel!
 
   """Связь с состояниями вагона"""
-  wagonState: [WagonStateModel!]!
+  wagonStates: [WagonStateModel!]!
 }
 
 """Данные для обновления информации о вагоне"""
@@ -491,6 +494,9 @@ type WagonOperationModel {
   """Тип операции"""
   type: OperationTypeModel!
   updatedAt: DateTime!
+
+  """Связь с состоянием вагона"""
+  wagonStates: WagonStateModel!
 }
 
 """Владелец вагона"""

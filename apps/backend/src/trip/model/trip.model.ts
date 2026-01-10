@@ -21,5 +21,5 @@ export class TripModel extends BaseModel {
   @Field(() => [WagonStateModel], {
     description: 'Связь с состояниями вагона',
   })
-  wagonState!: WagonStateModel[];
+  wagonStates!: WagonStateModel[];
 }

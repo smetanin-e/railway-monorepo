@@ -12,6 +12,28 @@ export class TripService {
     });
   }
 
+  async findOne(id: string): Promise<Trip | null> {
+    return await this.prisma.trip.findUnique({
+      where: { id },
+      include: {
+        wagon: { select: { id: true, number: true } },
+        wagonStates: {
+          include: {
+            station: true,
+            wagonOperations: {
+              select: {
+                startedAt: true,
+                endedAt: true,
+                type: { select: { name: true } },
+              },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+    });
+  }
+
   //!Переделать(добавить input)
   async createForBatch(params: { batchId: string; wagonId: string }) {
     const batch = await this.prisma.batch.findUnique({

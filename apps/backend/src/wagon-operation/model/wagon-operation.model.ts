@@ -20,8 +20,8 @@ export class WagonOperationModel extends BaseModel {
   })
   type!: OperationTypeModel;
 
-  //   @Field(() => WagonStateModel, {
-  //     description: 'Связь с состоянием вагона',
-  //   })
-  //   wagonState!: WagonStateModel;
+  @Field(() => WagonStateModel, {
+    description: 'Связь с состоянием вагона',
+  })
+  wagonStates!: WagonStateModel;
 }
