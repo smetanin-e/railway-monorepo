@@ -1,48 +1,116 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateWagonOperationInput } from './inputs/create-wagon-operation.input';
+import { PrismaTransaction } from 'src/prisma/types/prisma.type';
+import { WagonState } from '@prisma/client';
 
 @Injectable()
 export class WagonOperationService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private async getTrip(tx: PrismaTransaction, tripId: string) {
+    const trip = await tx.trip.findUnique({
+      where: { id: tripId },
+    });
+
+    if (!trip) {
+      throw new BadRequestException('Рейс не найден');
+    }
+    return trip;
+  }
+
+  private async getOperationType(tx: PrismaTransaction, typeId: string) {
+    const type = await tx.operationType.findUnique({
+      where: { id: typeId },
+    });
+
+    if (!type) {
+      throw new BadRequestException('Тип операции не найден');
+    }
+    return type;
+  }
+
+  private async getCurrentState(
+    tx: PrismaTransaction,
+    tripId: string,
+    at: Date,
+  ) {
+    const state = await tx.wagonState.findFirst({
+      where: {
+        tripId,
+        startedAt: { lte: at },
+        OR: [{ endedAt: null }, { endedAt: { gt: at } }],
+      },
+      orderBy: { startedAt: 'desc' },
+    });
+
+    if (!state) {
+      throw new BadRequestException(
+        'В данный период времени нет активного состояния вагона',
+      );
+    }
+
+    return state;
+  }
+  // Изменилось ли состояние вагона
+  //TODO Добавить вес груза позже.
+  private doesOperationChangeState(
+    current: WagonState,
+    input: CreateWagonOperationInput,
+  ): boolean {
+    return !(
+      current.stationId === input.stationId && current.cargoId === input.cargoId
+    );
+  }
+
+  private async closeState(
+    tx: PrismaTransaction,
+    stateId: string,
+    endedAt: Date,
+  ) {
+    await tx.wagonState.update({
+      where: {
+        id: stateId,
+      },
+      data: {
+        endedAt,
+      },
+    });
+  }
+
+  private async createNewState(
+    tx: PrismaTransaction,
+    prev: WagonState,
+    input: CreateWagonOperationInput,
+  ) {
+    await tx.wagonState.create({
+      data: {
+        wagonId: prev.wagonId,
+        tripId: prev.tripId,
+        stationId: input.stationId ?? prev.stationId,
+        cargoId: input.cargoId ?? null,
+        isEmpty: !input.cargoId,
+        startedAt: input.startedAt,
+      },
+    });
+  }
+
   async create(input: CreateWagonOperationInput) {
     return this.prisma.$transaction(async (tx) => {
-      // 1️⃣ Загружаем Trip + Wagon
-      const trip = await tx.trip.findUnique({
-        where: { id: input.tripId },
-      });
+      // Получаем рейс вагона
+      const trip = await this.getTrip(tx, input.tripId);
 
-      if (!trip) {
-        throw new BadRequestException('Рейс не найден');
-      }
+      // Получаем тип операции
+      await this.getOperationType(tx, input.typeId);
 
-      // 2️⃣ Загружаем тип операции
-      const operationType = await tx.operationType.findUnique({
-        where: { id: input.typeId },
-      });
+      // Получаем состояние вагона НА МОМЕНТ startedAt
+      const currentState = await this.getCurrentState(
+        tx,
+        trip.id,
+        input.startedAt,
+      );
 
-      if (!operationType) {
-        throw new BadRequestException('Тип операции не найден');
-      }
-
-      // 3️⃣ Ищем currentState НА МОМЕНТ startedAt
-      const currentState = await tx.wagonState.findFirst({
-        where: {
-          tripId: trip.id,
-          startedAt: { lte: input.startedAt },
-          OR: [{ endedAt: null }, { endedAt: { gt: input.startedAt } }],
-        },
-        orderBy: { startedAt: 'desc' },
-      });
-
-      if (!currentState) {
-        throw new BadRequestException(
-          'В данный период времени нет активного состояния вагона',
-        );
-      }
-
-      // 4️⃣ Создаём операцию
+      //  Создаём операцию
       const operation = await tx.wagonOperation.create({
         data: {
           wagonStateId: currentState.id,
@@ -52,35 +120,16 @@ export class WagonOperationService {
         },
       });
 
-      // 5️⃣ Проверяем: меняет ли операция состояние
-      //TODO Добавить вес груза позже.
-      const changesState =
-        currentState.cargoId === input.cargoId &&
-        currentState.stationId === input.stationId;
-
-      if (changesState) {
+      // Проверяем: меняет ли операция состояние
+      if (!this.doesOperationChangeState(currentState, input)) {
         return operation;
       }
 
-      // 6️⃣ Закрываем currentState
-      await tx.wagonState.update({
-        where: { id: currentState.id },
-        data: {
-          endedAt: input.startedAt,
-        },
-      });
+      // Закрываем currentState
+      await this.closeState(tx, currentState.id, input.startedAt);
 
-      // 7️⃣ Создаём новый WagonState (результат операции)
-      await tx.wagonState.create({
-        data: {
-          wagonId: currentState.wagonId,
-          tripId: currentState.tripId,
-          stationId: input.stationId ? input.stationId : currentState.stationId,
-          cargoId: input.cargoId ? input.cargoId : null,
-          isEmpty: input.cargoId ? false : true,
-          startedAt: input.startedAt,
-        },
-      });
+      //  Создаём новый WagonState (результат операции)
+      await this.createNewState(tx, currentState, input);
     });
   }
 }
