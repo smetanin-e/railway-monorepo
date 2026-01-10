@@ -1,0 +1,115 @@
+.
+├── eslint.config.mjs
+├── nest-cli.json
+├── package.json
+├── prisma
+│   ├── migrations
+│   │   ├── 20251229121744_init
+│   │   ├── 20260101145911_new_migrate
+│   │   ├── 20260104112144_123
+│   │   └── migration_lock.toml
+│   └── schema.prisma
+├── prisma.config.ts
+├── project-structure.txt
+├── README.md
+├── src
+│   ├── app.controller.spec.ts
+│   ├── app.controller.ts
+│   ├── app.module.ts
+│   ├── app.service.ts
+│   ├── batch
+│   │   ├── batch.module.ts
+│   │   ├── batch.resolver.ts
+│   │   ├── batch.service.ts
+│   │   ├── enums
+│   │   ├── inputs
+│   │   ├── model
+│   │   └── rules
+│   ├── cargo
+│   │   ├── cargo.module.ts
+│   │   ├── cargo.resolver.ts
+│   │   ├── cargo.service.ts
+│   │   ├── inputs
+│   │   ├── model
+│   │   └── pipe
+│   ├── cargo-owner
+│   │   ├── cargo-owner.module.ts
+│   │   ├── cargo-owner.resolver.ts
+│   │   ├── cargo-owner.service.ts
+│   │   ├── inputs
+│   │   ├── model
+│   │   └── pipes
+│   ├── common
+│   │   ├── base.model.ts
+│   │   └── pipes
+│   ├── config
+│   │   └── graphql.config.ts
+│   ├── main.ts
+│   ├── operation-type
+│   │   ├── enums
+│   │   ├── inputs
+│   │   ├── model
+│   │   ├── operation-type.module.ts
+│   │   ├── operation-type.resolver.ts
+│   │   ├── operation-type.service.ts
+│   │   └── pipes
+│   ├── prisma
+│   │   ├── prisma.module.ts
+│   │   ├── prisma.service.ts
+│   │   ├── types
+│   │   └── utils
+│   ├── schema.gql
+│   ├── station
+│   │   ├── enums
+│   │   ├── inputs
+│   │   ├── model
+│   │   ├── pipes
+│   │   ├── station.module.ts
+│   │   ├── station.resolver.ts
+│   │   └── station.service.ts
+│   ├── trip
+│   │   ├── inputs
+│   │   ├── model
+│   │   ├── trip.module.ts
+│   │   ├── trip.resolver.ts
+│   │   └── trip.service.ts
+│   ├── utils
+│   │   └── is-dev.util.ts
+│   ├── wagon
+│   │   ├── domain
+│   │   ├── enums
+│   │   ├── inputs
+│   │   ├── model
+│   │   ├── pipes
+│   │   ├── wagon.module.ts
+│   │   ├── wagon.resolver.ts
+│   │   └── wagon.service.ts
+│   ├── wagon-operation
+│   │   ├── inputs
+│   │   ├── model
+│   │   ├── wagon-operation.module.ts
+│   │   ├── wagon-operation.resolver.ts
+│   │   └── wagon-operation.service.ts
+│   ├── wagon-owner
+│   │   ├── inputs
+│   │   ├── model
+│   │   ├── pipes
+│   │   ├── wagon-owner.module.ts
+│   │   ├── wagon-owner.resolver.ts
+│   │   └── wagon-owner.service.ts
+│   └── wagon-type
+│       ├── inputs
+│       ├── model
+│       ├── pipes
+│       ├── wagon-type.module.ts
+│       ├── wagon-type.resolver.ts
+│       └── wagon-type.service.ts
+├── test
+│   ├── app.e2e-spec.ts
+│   └── jest-e2e.json
+├── tsconfig.build.json
+├── tsconfig.build.tsbuildinfo
+├── tsconfig.eslint.json
+└── tsconfig.json
+
+58 directories, 55 files

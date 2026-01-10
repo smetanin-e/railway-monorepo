@@ -67,6 +67,9 @@ type CargoModel {
   """Код груза ГНГ(внутренний)"""
   nationalCode: String!
   updatedAt: DateTime!
+
+  """Связь с состояниями вагона"""
+  wagonState: [WagonStateModel!]!
 }
 
 """Владелец груза"""
@@ -134,16 +137,21 @@ input CreateOperationTypeInput {
   """
   category: OperationCategory!
 
+  """
+  Код операции "LOAD" | "UNLOAD" (ОПЦИОНАЛЬНО)"
+  """
+  code: OperationCode
+
+  """
+  Конкурентность выполнения операций "EXCLUSIVE" | "PARALLEL""
+  """
+  concurrency: OperationConcurrency!
+
   """Название операции"""
   name: String!
 
   """Норма"""
   normative: Float!
-
-  """
-  Роль операции "PRIMARY" | "SECONDARY"
-  """
-  role: OperationRole!
 }
 
 """Данные для создания станции"""
@@ -180,6 +188,27 @@ input CreateWagonInput {
 
   """Объем (м³)"""
   volume: Float!
+}
+
+"""Данные для создания операции"""
+input CreateWagonOperationInput {
+  """ID груза"""
+  cargoId: String
+
+  """Дата и время окончания операции"""
+  endedAt: DateTime
+
+  """Дата и время начала операции"""
+  startedAt: DateTime!
+
+  """ID станции"""
+  stationId: String!
+
+  """ID рейса"""
+  tripId: String!
+
+  """ID типа операции"""
+  typeId: String!
 }
 
 """Данные для создания владельца вагона"""
@@ -222,6 +251,9 @@ type Mutation {
   createWagon(data: CreateWagonInput!): WagonModel!
 
   """Создать новый тип вагона"""
+  createWagonOperation(data: CreateWagonOperationInput!): WagonOperationModel!
+
+  """Создать новый тип вагона"""
   createWagonOwner(data: CreateWagonOwnerInput!): WagonOwnerModel!
 
   """Создать новый тип вагона"""
@@ -261,11 +293,19 @@ enum OperationCategory {
 }
 
 """
-Роль операции "PRIMARY" | "SECONDARY"
+Код операции "LOAD" | "UNLOAD"
 """
-enum OperationRole {
-  PRIMARY
-  SECONDARY
+enum OperationCode {
+  LOAD
+  UNLOAD
+}
+
+"""
+Конкурентность выполнения операций "EXCLUSIVE" | "PARALLEL"
+"""
+enum OperationConcurrency {
+  EXCLUSIVE
+  PARALLEL
 }
 
 """Тип операции"""
@@ -274,6 +314,16 @@ type OperationTypeModel {
   Категория операции "ACTIVE" | "PASSIVE"
   """
   category: OperationCategory!
+
+  """
+  Код операции "LOAD" | "UNLOAD" (ОПЦИОНАЛЬНО)""
+  """
+  code: OperationCode
+
+  """
+  Конкурентность выполнения операций "EXCLUSIVE" | "PARALLEL"
+  """
+  concurrency: OperationConcurrency!
   createdAt: DateTime!
   id: ID!
 
@@ -282,11 +332,6 @@ type OperationTypeModel {
 
   """Норма"""
   normative: Float!
-
-  """
-  Роль операции "PRIMARY" | "SECONDARY"
-  """
-  role: OperationRole!
   updatedAt: DateTime!
 }
 
@@ -333,17 +378,26 @@ type Query {
 
 """Модель станции"""
 type StationModel {
-  """Код снанции (только для внешних станций)"""
+  """Код станции (только для внешних станций)"""
   code: String
   createdAt: DateTime!
+
+  """Связь с партиями, отправленными со станции"""
+  fromBatches: [BatchModel!]!
   id: ID!
 
   """Название станции (строка)"""
   name: String!
 
+  """Связь с партиями, прибывшими на станцию"""
+  toBatches: [BatchModel!]!
+
   """Тип станции (внешняя или внутренняя)"""
   type: StationType!
   updatedAt: DateTime!
+
+  """Связь с состояниями вагона"""
+  wagonStates: [WagonStateModel!]!
 }
 
 """Тип станции (внутренняя / внешняя)"""
@@ -364,6 +418,9 @@ type TripModel {
 
   """Связь с вагоном"""
   wagon: WagonModel!
+
+  """Связь с состояниями вагона"""
+  wagonState: [WagonStateModel!]!
 }
 
 """Данные для обновления информации о вагоне"""
@@ -420,6 +477,22 @@ type WagonModel {
   volume: Float!
 }
 
+"""Операция с вагоном"""
+type WagonOperationModel {
+  createdAt: DateTime!
+
+  """Дата и время завершение операции"""
+  endedAt: DateTime
+  id: ID!
+
+  """Дата и время начала операции"""
+  startedAt: DateTime!
+
+  """Тип операции"""
+  type: OperationTypeModel!
+  updatedAt: DateTime!
+}
+
 """Владелец вагона"""
 type WagonOwnerModel {
   createdAt: DateTime!
@@ -437,6 +510,36 @@ type WagonOwnerModel {
 enum WagonOwnership {
   LEASED
   OWN
+}
+
+"""Операция с вагоном"""
+type WagonStateModel {
+  """Связь с грузом"""
+  cargo: CargoModel!
+  createdAt: DateTime!
+
+  """Дата и время окончания операции"""
+  endedAt: DateTime
+  id: ID!
+
+  """Пустой вагон или нет"""
+  isEmpty: Boolean!
+
+  """Дата и время начала операции"""
+  startedAt: DateTime!
+
+  """Связь со станцией"""
+  station: StationModel!
+
+  """Связь с рейсом"""
+  trip: TripModel!
+  updatedAt: DateTime!
+
+  """Связь с вагоном"""
+  wagon: WagonModel!
+
+  """Связь с операциями"""
+  wagonOperations: [WagonOperationModel!]!
 }
 
 """Тип вагона"""

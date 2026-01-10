@@ -9,7 +9,8 @@ export * from './wagon/enums/wagon-ownership.enum';
 export * from './batch/enums/batch.enum';
 
 export * from './operation-type/enums/operation-category.enum';
-export * from './operation-type/enums/operation-role.enum';
+export * from './operation-type/enums/operation-concurrency.enum';
+export * from './operation-type/enums/operation-code.enum';
 export * from './operation-type/schemas/create-operation-type.schema';
 
 export * from './cargo/schemas/create-cargo.schema';

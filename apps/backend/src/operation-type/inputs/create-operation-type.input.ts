@@ -1,6 +1,7 @@
 import { Field, Float, InputType } from '@nestjs/graphql';
 import { OperationCategory } from '../enums/operation-category.enum';
-import { OperationRole } from '../enums/operation-role.enum';
+import { OperationConcurrency } from '../enums/operation-concurrency.enum';
+import { OperationCode } from '../enums/operation-code.enum';
 
 @InputType({ description: 'Данные для создания типа операции' })
 export class CreateOperationTypeInput {
@@ -15,8 +16,14 @@ export class CreateOperationTypeInput {
   })
   category!: OperationCategory;
 
-  @Field(() => OperationRole, {
-    description: 'Роль операции "PRIMARY" | "SECONDARY"',
+  @Field(() => OperationConcurrency, {
+    description: 'Конкурентность выполнения операций "EXCLUSIVE" | "PARALLEL""',
   })
-  role!: OperationRole;
+  concurrency!: OperationConcurrency;
+
+  @Field(() => OperationCode, {
+    nullable: true,
+    description: 'Код операции "LOAD" | "UNLOAD" (ОПЦИОНАЛЬНО)"',
+  })
+  code?: OperationCode;
 }

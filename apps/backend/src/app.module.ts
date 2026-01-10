@@ -15,6 +15,7 @@ import { CargoModule } from './cargo/cargo.module';
 import { TripModule } from './trip/trip.module';
 import { BatchModule } from './batch/batch.module';
 import { OperationTypeModule } from './operation-type/operation-type.module';
+import { WagonOperationModule } from './wagon-operation/wagon-operation.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { OperationTypeModule } from './operation-type/operation-type.module';
     TripModule,
     BatchModule,
     OperationTypeModule,
+    WagonOperationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

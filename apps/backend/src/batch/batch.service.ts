@@ -27,7 +27,7 @@ export class BatchService {
           fromStationId: input.fromStationId,
           toStationId: input.toStationId,
           cargoOwnerId: input.cargoOwnerId,
-          cargoId: input.cargoId,
+          cargoId: input.cargoId, //! или null
         },
       });
 
@@ -43,11 +43,11 @@ export class BatchService {
         await tx.wagonState.create({
           data: {
             wagonId,
-            // batchId: trip.batchId,
             stationId: batch.fromStationId,
             tripId: trip.id,
             startedAt: batch.startedAt,
-            cargoId: batch.cargoId,
+            cargoId: batch.cargoId, //!Переделать. Вагоны могут зайти порожние
+            isEmpty: false, //! isEmpty: cargo.id
           },
         });
       }

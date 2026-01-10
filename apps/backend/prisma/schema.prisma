@@ -145,6 +145,8 @@ model WagonState {
     cargoId String? @map("cargo_id")
     cargo   Cargo?  @relation(fields: [cargoId], references: [id])
 
+    isEmpty Boolean
+
     stationId String  @map("station_id")
     station   Station @relation(fields: [stationId], references: [id])
 
@@ -165,26 +167,31 @@ model WagonState {
 }
 
 model OperationType {
-    id              String            @id @default(uuid())
-    name            String            @unique
-    normative       Decimal           @db.Decimal(10, 3)
+    id              String               @id @default(uuid())
+    name            String               @unique
+    normative       Decimal              @db.Decimal(10, 3)
     category        OperationCategory
-    role            OperationRole
+    concurrency     OperationConcurrency
+    code            OperationCode?
     wagonOperations WagonOperation[]
 
     @@map("Operation_types")
 }
 
 model WagonOperation {
-    id           String        @id @default(uuid())
+    id String @id @default(uuid())
+
+    startedAt DateTime  @map("started_at")
+    endedAt   DateTime? @map("ended_at")
+
+    typeId String
+    type   OperationType @relation(fields: [typeId], references: [id])
+
     wagonStateId String
-    typeId       String
-    startedAt    DateTime      @map("started_at")
-    endedAt      DateTime?     @map("ended_at")
-    createdAt    DateTime      @default(now()) @map("created_at")
-    updatedAt    DateTime      @updatedAt @map("updated_at")
-    type         OperationType @relation(fields: [typeId], references: [id])
-    wagonState   WagonState    @relation(fields: [wagonStateId], references: [id])
+    wagonState   WagonState @relation(fields: [wagonStateId], references: [id])
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
 
     @@map("Wagon_operations")
 }
@@ -228,9 +235,14 @@ enum OperationCategory {
     PASSIVE
 }
 
-enum OperationRole {
-    PRIMARY
-    SECONDARY
+enum OperationConcurrency {
+    EXCLUSIVE // блокирует другие
+    PARALLEL // допускает параллельность
+}
+
+enum OperationCode {
+    LOAD
+    UNLOAD
 }
 
 enum StationType {
