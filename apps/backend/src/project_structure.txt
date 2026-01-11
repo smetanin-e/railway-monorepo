@@ -1,0 +1,148 @@
+.
+├── app.controller.spec.ts
+├── app.controller.ts
+├── app.module.ts
+├── app.service.ts
+├── batch
+│   ├── batch.module.ts
+│   ├── batch.resolver.ts
+│   ├── batch.service.ts
+│   ├── enums
+│   │   ├── batch-direction.enum.ts
+│   │   └── batch-type.enum.ts
+│   ├── inputs
+│   │   └── create-batch.input.ts
+│   ├── model
+│   │   └── batch.model.ts
+│   └── rules
+│       ├── batch.rules.ts
+│       ├── check-valid-stations.rule.ts
+│       ├── checkWagonOwnershipForBatchType.ts
+│       ├── check-wagons-free.rule.ts
+│       └── station-direction.rules.ts
+├── cargo
+│   ├── cargo.module.ts
+│   ├── cargo.resolver.ts
+│   ├── cargo.service.ts
+│   ├── inputs
+│   │   └── create-cargo.input.ts
+│   ├── model
+│   │   └── cargo.model.ts
+│   └── pipe
+│       └── create-cargo.pipe.ts
+├── cargo-owner
+│   ├── cargo-owner.module.ts
+│   ├── cargo-owner.resolver.ts
+│   ├── cargo-owner.service.ts
+│   ├── inputs
+│   │   └── create-cargo-owner.input.ts
+│   ├── model
+│   │   └── cargo-owner.model.ts
+│   └── pipes
+│       └── create-cargo-owner.pipe.ts
+├── common
+│   ├── base.model.ts
+│   └── pipes
+│       └── zod-validation.pipe.ts
+├── config
+│   └── graphql.config.ts
+├── main.ts
+├── operation-type
+│   ├── enums
+│   │   ├── operation-category.enum.ts
+│   │   ├── operation-code.enum.ts
+│   │   └── operation-concurrency.enum.ts
+│   ├── inputs
+│   │   └── create-operation-type.input.ts
+│   ├── model
+│   │   └── operation-type.model.ts
+│   ├── operation-type.module.ts
+│   ├── operation-type.resolver.ts
+│   ├── operation-type.service.ts
+│   └── pipes
+│       └── create-operation-type.pipe.ts
+├── prisma
+│   ├── prisma.module.ts
+│   ├── prisma.service.ts
+│   ├── types
+│   │   └── prisma.type.ts
+│   └── utils
+│       └── prisma-error.util.ts
+├── project_structure.txt
+├── schema.gql
+├── station
+│   ├── enums
+│   │   └── station-type.enum.ts
+│   ├── inputs
+│   │   └── create-station.input.ts
+│   ├── model
+│   │   └── station.model.ts
+│   ├── pipes
+│   │   └── create-station.pipe.ts
+│   ├── station.module.ts
+│   ├── station.resolver.ts
+│   └── station.service.ts
+├── trip
+│   ├── inputs
+│   │   ├── create-trip.input.ts
+│   │   └── finish-trip.input.ts
+│   ├── model
+│   │   └── trip.model.ts
+│   ├── trip.module.ts
+│   ├── trip.resolver.ts
+│   └── trip.service.ts
+├── utils
+│   └── is-dev.util.ts
+├── wagon
+│   ├── domain
+│   │   └── wagon-number.validator.ts
+│   ├── enums
+│   │   └── wagon-ownership.enum.ts
+│   ├── inputs
+│   │   ├── create-wagon.input.ts
+│   │   └── update-wagon.input.ts
+│   ├── model
+│   │   └── wagon.model.ts
+│   ├── pipes
+│   │   ├── create-wagon.pipe.ts
+│   │   └── update-wagon.pipe.ts
+│   ├── wagon.module.ts
+│   ├── wagon.resolver.ts
+│   └── wagon.service.ts
+├── wagon-operation
+│   ├── inputs
+│   │   └── create-wagon-operation.input.ts
+│   ├── model
+│   │   └── wagon-operation.model.ts
+│   ├── pipes
+│   │   └── create-wagon-operation.pipe.ts
+│   ├── wagon-operation.module.ts
+│   ├── wagon-operation.resolver.ts
+│   └── wagon-operation.service.ts
+├── wagon-owner
+│   ├── inputs
+│   │   └── create-wagon-owner.input.ts
+│   ├── model
+│   │   └── wagon-owner-model.ts
+│   ├── pipes
+│   │   └── create-wagon-owner.pipe.ts
+│   ├── wagon-owner.module.ts
+│   ├── wagon-owner.resolver.ts
+│   └── wagon-owner.service.ts
+├── wagon-state
+│   └── model
+│       └── wagon-state.model.ts
+└── wagon-type
+    ├── inputs
+    │   ├── create-wagon-type.input.ts
+    │   └── update-wagon-type.input.ts
+    ├── model
+    │   └── wagon-type.model.ts
+    ├── pipes
+    │   ├── create-wagon-type.pipe.ts
+    │   └── update-wagon-type.pipe.ts
+    ├── wagon-type.module.ts
+    ├── wagon-type.resolver.ts
+    └── wagon-type.service.ts
+
+54 directories, 92 files

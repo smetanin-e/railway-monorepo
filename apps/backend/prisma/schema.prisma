@@ -163,9 +163,12 @@ model WagonState {
 }
 
 model OperationType {
-    id              String               @id @default(uuid())
-    name            String               @unique
-    normative       Decimal              @db.Decimal(10, 3)
+    id        String  @id @default(uuid())
+    name      String  @unique
+    normative Decimal @db.Decimal(10, 3)
+
+    changesState Boolean @default(false)
+
     category        OperationCategory
     concurrency     OperationConcurrency
     wagonOperations WagonOperation[]

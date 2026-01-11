@@ -3,7 +3,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateWagonOperationInput } from './inputs/create-wagon-operation.input';
 import { PrismaTransaction } from 'src/prisma/types/prisma.type';
 import { WagonState } from '@prisma/client';
+import { WagonStateMachine } from 'src/wagon/domain/state/wagon-state.machine';
+import { WagonStateSnapshot } from 'src/wagon/domain/state/wagon-state.types';
 
+//* Решает КОГДА и КАК сохранить
 @Injectable()
 export class WagonOperationService {
   constructor(private readonly prisma: PrismaService) {}
@@ -69,24 +72,42 @@ export class WagonOperationService {
   }
 
   //Правило - потом вынести отдельно
-  //   private checkExclusiveConcurrency(
-  //     operationType: any,
-  //     activeOperations: any[],
-  //   ) {
-  //     if (operationType.concurrency !== 'EXCLUSIVE') {
-  //       return;
-  //     }
-  //   }
+  private checkExclusiveConcurrency(
+    operationType: any,
+    activeOperations: any[],
+  ) {
+    if (operationType.concurrency !== 'EXCLUSIVE') {
+      return;
+    }
 
-  // Изменилось ли состояние вагона
-  //TODO Добавить вес груза позже.
-  private doesOperationChangeState(
-    current: WagonState,
-    input: CreateWagonOperationInput,
-  ): boolean {
-    return !(
-      current.stationId === input.stationId && current.cargoId === input.cargoId
+    const hasActiveExclusive = activeOperations.some(
+      (op) => op.type.concurrency === 'EXCLUSIVE',
     );
+
+    if (hasActiveExclusive) {
+      throw new BadRequestException(
+        'Нельзя начать EXCLUSIVE операцию, пока не завершена предыдущая',
+      );
+    }
+  }
+
+  private checkParallelConcurrency(
+    operationType: any,
+    activeOperations: any[],
+  ) {
+    if (operationType.concurrency !== 'PARALLEL') {
+      return;
+    }
+
+    const hasActiveExclusive = activeOperations.some(
+      (op) => op.type.concurrency === 'EXCLUSIVE',
+    );
+
+    if (hasActiveExclusive) {
+      throw new BadRequestException(
+        'PARALLEL операция не может выполняться во время EXCLUSIVE',
+      );
+    }
   }
 
   private async closeState(
@@ -107,16 +128,17 @@ export class WagonOperationService {
   private async createNewState(
     tx: PrismaTransaction,
     prev: WagonState,
-    input: CreateWagonOperationInput,
+    snapshot: WagonStateSnapshot,
+    startedAt: Date,
   ) {
     await tx.wagonState.create({
       data: {
         wagonId: prev.wagonId,
         tripId: prev.tripId,
-        stationId: input.stationId ?? prev.stationId,
-        cargoId: input.cargoId ?? null,
-        isEmpty: !input.cargoId,
-        startedAt: input.startedAt,
+        stationId: snapshot.stationId,
+        cargoId: snapshot.cargoId,
+        isEmpty: snapshot.isEmpty,
+        startedAt,
       },
     });
   }
@@ -127,7 +149,7 @@ export class WagonOperationService {
       const trip = await this.getTrip(tx, input.tripId);
 
       // Получаем тип операции
-      await this.getOperationType(tx, input.typeId);
+      const operationType = await this.getOperationType(tx, input.typeId);
 
       // Получаем состояние вагона НА МОМЕНТ startedAt
       const currentState = await this.getCurrentState(
@@ -135,6 +157,16 @@ export class WagonOperationService {
         trip.id,
         input.startedAt,
       );
+
+      const activeOperations = await this.getActiveOperations(
+        tx,
+        currentState.id,
+        input.startedAt,
+      );
+
+      //Проверяем параллельность
+      this.checkExclusiveConcurrency(operationType, activeOperations);
+      this.checkParallelConcurrency(operationType, activeOperations);
 
       //  Создаём операцию
       const operation = await tx.wagonOperation.create({
@@ -147,15 +179,23 @@ export class WagonOperationService {
       });
 
       // Проверяем: меняет ли операция состояние
-      if (!this.doesOperationChangeState(currentState, input)) {
-        return operation;
+      const transition = WagonStateMachine.calculate({
+        current: currentState,
+        input,
+      });
+
+      if (transition.type === 'CHANGE') {
+        // Закрываем currentState
+        await this.closeState(tx, currentState.id, input.startedAt);
+
+        //  Создаём новый WagonState (результат операции)
+        await this.createNewState(
+          tx,
+          currentState,
+          transition.next,
+          input.startedAt,
+        );
       }
-
-      // Закрываем currentState
-      await this.closeState(tx, currentState.id, input.startedAt);
-
-      //  Создаём новый WagonState (результат операции)
-      await this.createNewState(tx, currentState, input);
     });
   }
 }
