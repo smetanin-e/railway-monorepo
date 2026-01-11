@@ -52,6 +52,32 @@ export class WagonOperationService {
 
     return state;
   }
+
+  private async getActiveOperations(
+    tx: PrismaTransaction,
+    wagonStateId: string,
+    at: Date,
+  ) {
+    return tx.wagonOperation.findMany({
+      where: {
+        wagonStateId,
+        startedAt: { lte: at },
+        OR: [{ endedAt: null }, { endedAt: { gt: at } }],
+      },
+      include: { type: true },
+    });
+  }
+
+  //Правило - потом вынести отдельно
+  //   private checkExclusiveConcurrency(
+  //     operationType: any,
+  //     activeOperations: any[],
+  //   ) {
+  //     if (operationType.concurrency !== 'EXCLUSIVE') {
+  //       return;
+  //     }
+  //   }
+
   // Изменилось ли состояние вагона
   //TODO Добавить вес груза позже.
   private doesOperationChangeState(
