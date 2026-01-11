@@ -6,6 +6,8 @@ import {
 //TODO Добавить вес груза
 
 //* Решает ЧТО будет
+
+//!Этот способ не масштабируемый и при изменении нескольких свойств применится только первое
 export class WagonStateMachine {
   static calculate(ctx: StateTransitionContext): StateTransitionResult {
     const { current, input } = ctx;
