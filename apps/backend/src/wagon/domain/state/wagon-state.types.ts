@@ -10,6 +10,8 @@ export type WagonStateSnapshot = {
   stationId: string;
   cargoId: string | null;
   isEmpty: boolean;
+  wagonWeight?: number;
+  cargoWeight?: number | null;
 };
 
 export type StateTransitionResult =
