@@ -143,59 +143,59 @@ export class WagonOperationService {
     });
   }
 
-  async create(input: CreateWagonOperationInput) {
-    return this.prisma.$transaction(async (tx) => {
-      // Получаем рейс вагона
-      const trip = await this.getTrip(tx, input.tripId);
+  //   async create(input: CreateWagonOperationInput) {
+  //     return this.prisma.$transaction(async (tx) => {
+  //       // Получаем рейс вагона
+  //       const trip = await this.getTrip(tx, input.tripId);
 
-      // Получаем тип операции
-      const operationType = await this.getOperationType(tx, input.typeId);
+  //       // Получаем тип операции
+  //       const operationType = await this.getOperationType(tx, input.typeId);
 
-      // Получаем состояние вагона НА МОМЕНТ startedAt
-      const currentState = await this.getCurrentState(
-        tx,
-        trip.id,
-        input.startedAt,
-      );
+  //       // Получаем состояние вагона НА МОМЕНТ startedAt
+  //       const currentState = await this.getCurrentState(
+  //         tx,
+  //         trip.id,
+  //         input.startedAt,
+  //       );
 
-      const activeOperations = await this.getActiveOperations(
-        tx,
-        currentState.id,
-        input.startedAt,
-      );
+  //       const activeOperations = await this.getActiveOperations(
+  //         tx,
+  //         currentState.id,
+  //         input.startedAt,
+  //       );
 
-      //Проверяем параллельность
-      this.checkExclusiveConcurrency(operationType, activeOperations);
-      this.checkParallelConcurrency(operationType, activeOperations);
+  //       //Проверяем параллельность
+  //       this.checkExclusiveConcurrency(operationType, activeOperations);
+  //       this.checkParallelConcurrency(operationType, activeOperations);
 
-      //  Создаём операцию
-      const operation = await tx.wagonOperation.create({
-        data: {
-          wagonStateId: currentState.id,
-          typeId: input.typeId,
-          startedAt: input.startedAt,
-          endedAt: input.endedAt,
-        },
-      });
+  //       //  Создаём операцию
+  //       const operation = await tx.wagonOperation.create({
+  //         data: {
+  //           wagonStateId: currentState.id,
+  //           typeId: input.typeId,
+  //           startedAt: input.startedAt,
+  //           endedAt: input.endedAt,
+  //         },
+  //       });
 
-      // Проверяем: меняет ли операция состояние
-      const transition = WagonStateMachine.calculate({
-        current: currentState,
-        input,
-      });
+  //       // Проверяем: меняет ли операция состояние
+  //       const transition = WagonStateMachine.calculate({
+  //         current: currentState,
+  //         input,
+  //       });
 
-      if (transition.type === 'CHANGE') {
-        // Закрываем currentState
-        await this.closeState(tx, currentState.id, input.startedAt);
+  //       if (transition.type === 'CHANGE') {
+  //         // Закрываем currentState
+  //         await this.closeState(tx, currentState.id, input.startedAt);
 
-        //  Создаём новый WagonState (результат операции)
-        await this.createNewState(
-          tx,
-          currentState,
-          transition.next,
-          input.startedAt,
-        );
-      }
-    });
-  }
+  //         //  Создаём новый WagonState (результат операции)
+  //         await this.createNewState(
+  //           tx,
+  //           currentState,
+  //           transition.next,
+  //           input.startedAt,
+  //         );
+  //       }
+  //     });
+  //   }
 }

@@ -188,9 +188,15 @@ model WagonOperation {
     wagonStateId String
     wagonState   WagonState @relation(fields: [wagonStateId], references: [id])
 
+    // 📌 Результаты измерений (если есть)
+    wagonWeight Float? @map("wagon_weight")
+    cargoWeight Float? @map("cargo_weight")
+
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
+    @@index([wagonStateId])
+    @@index([startedAt])
     @@map("Wagon_operations")
 }
 
